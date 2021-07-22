@@ -52,7 +52,7 @@ jobs:
         DEPLOY_KEY: ${{ secrets.PRIVATE_KEY }}
         ARGS: "-c -r --delete"
         SERVER_PORT: 22
-        FOLDER: ./build
+        FOLDER: ./build/
         SERVER_IP: ${{ secrets.HOST }}
         USERNAME: ${{ secrets.USERNAME }}
         SERVER_DESTINATION: /var/www/henan.tianshili.me/
