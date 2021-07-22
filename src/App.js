@@ -1,7 +1,7 @@
 import './App.css';
 import {BaiduMap, Marker, InfoWindow, NavigationControl, GeolocationControl, MarkerClusterer, asyncWrapper} from 'react-baidu-maps';
 import data from './parse_json.json'
-import {useState, useRef} from "react";
+import {useState} from "react";
 
 const AsyncMap = asyncWrapper(BaiduMap);
 
@@ -62,7 +62,7 @@ function App() {
             </div>
 
             <AsyncMap 
-                mapUrl={`http://api.map.baidu.com/api?v=2.0&ak=rhYOnH9F76XbdcgHFBCVMgI0hZluSzmw`}
+                mapUrl={`https://api.map.baidu.com/api?v=2.0&ak=mTM4lv5gl2AenfvEuC8hV6DMGyWF4mBZ`}
                 loadingElement={<div style={{textAlign: 'center', fontSize: 40}}>Loading.....</div>}
                 enableScrollWheelZoom
                 enableDragging
