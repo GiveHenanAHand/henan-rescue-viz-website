@@ -1,11 +1,20 @@
 import './App.css';
-import {BaiduMap, Marker, InfoWindow, NavigationControl, GeolocationControl} from 'react-baidu-maps';
+import {BaiduMap, Marker, InfoWindow, NavigationControl, GeolocationControl, MarkerClusterer } from 'react-baidu-maps';
 import data from './parse_json.json'
 import {useState} from "react";
 
 function App() {
     const [timePreference, setTimePreference] = useState("see_all")
     const [timeRange, setTimeRange] = useState(8)
+
+    const MAX = 5;
+    const markerClusterer = [];
+    for (let i = 0; i < MAX; i++) {
+        markerClusterer.push({
+            lng: (Math.random() * 40) + 85,
+            lat: (Math.random() * 30) + 21
+        });
+    }
 
     let filterData = () => {
         var filtered_data = []
@@ -58,7 +67,9 @@ function App() {
             </div>
 
             <BaiduMap defaultZoom={9} defaultCenter={{lng:113.802193, lat:34.820333}} mapContainer={<div className={"mapDiv"}/>}>
-                {filterData()}
+                <MarkerClusterer>
+                    {filterData()}
+                </MarkerClusterer> 
                 <NavigationControl
                     type="small"
                     anchor="top_right"
