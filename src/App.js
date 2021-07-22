@@ -69,9 +69,9 @@ function App() {
                 defaultZoom={9} 
                 defaultCenter={{lng:113.802193, lat:34.820333}} 
                 mapContainer={<div className={"mapDiv"}/>}>
-                <MarkerClusterer ref={currentRef => (markerClustererRef = currentRef)}>
+                {/*<MarkerClusterer ref={currentRef => (markerClustererRef = currentRef)}>*/}
                     {filterData()}
-                </MarkerClusterer>
+                {/*</MarkerClusterer>*/}
                 <NavigationControl
                     type="small"
                     anchor="top_right"
