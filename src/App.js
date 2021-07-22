@@ -7,7 +7,7 @@ const AsyncMap = asyncWrapper(BaiduMap);
 
 function App() {
     const [timeRange, setTimeRange] = useState(8)
-
+    const [childKey, setChildKey] = useState(1);
     const markerClustererRef = useRef(null);
 
     let filterData = () => {
@@ -49,6 +49,7 @@ function App() {
     }
 
     let handleSliderChange = (e) => {
+        setChildKey(prev => prev + 1)
         setTimeRange(e.target.value)
     }
 
@@ -68,9 +69,9 @@ function App() {
                 defaultZoom={9} 
                 defaultCenter={{lng:113.802193, lat:34.820333}} 
                 mapContainer={<div className={"mapDiv"}/>}>
-                <MarkerClusterer ref={markerClustererRef}>
-                    {filterData()}
-                </MarkerClusterer>
+                    {/* <MarkerClusterer ref={markerClustererRef} key={childKey}>  */}
+                        {filterData()}
+                    {/* </MarkerClusterer> */}
                 <NavigationControl
                     type="small"
                     anchor="top_right"
