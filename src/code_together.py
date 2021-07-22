@@ -106,7 +106,6 @@ class Save(object):
             self.data[id]['time'] = created_at_time
             self.data[id]['link'] = i
             self.data[id]['post'] = log_text
-            self.data[id]['checked_times'] = 1
 
             cnt += 1
 
@@ -224,12 +223,10 @@ class Save(object):
 
         print("Export %d info" % len(news))
 
-    def Update_Saved(self, max_time=5):
+    def Update_Saved(self):
         """
         To check if the weibo is still active
-        logic is similar to slow start
-        max check time can be customized, default set to 4 which means after 32 hours
-        we will not check the status of the weibo again
+        Deleting weibos that are deleted by owner or still there for more than 3 days
         """
         self.data = np.load("latest_data.npy", allow_pickle=True)[()]
 
@@ -238,24 +235,19 @@ class Save(object):
             # check if it exceeds the max check times
             try:
                 # TODO: why is this weibo still here? may need manual work from authorized persons
-                times = v['checked_times']
-                if times >= max_time:
-                    res[k] = v
-                    continue
+
                 # check if it needs to be revisit
                 utc_dt = datetime.now(timezone.utc)  # UTC time
                 current_time = utc_dt.astimezone()  # local time
                 created = datetime.strptime(v['time'], '%a %b %d %H:%M:%S %z %Y')
                 delta = current_time - created
-                if delta.total_seconds() <= pow(2, times) * 3600:
-                    res[k] = v
+                if delta.total_seconds() >= 3600*24*3:
                     continue
                 # check if it's still active
                 text = requests.get(v['link']).text
                 if re.search("微博不存在或暂无查看权限!", text):
                     continue
                 else:
-                    v['checked_times'] = times + 1
                     res[k] = v
             except Exception as e:
                 # keeps current one
