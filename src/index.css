@@ -28,3 +28,19 @@ html,body {
 .mapDiv {
   height: 100%
 }
+
+.info {
+  z-index: 999;
+  width: auto;
+  min-width: 22rem;
+  padding: .75rem 1.25rem;
+  margin-left: 1.25rem;
+  position: fixed;
+  top: 1rem;
+  background-color: #fff;
+  border-radius: .25rem;
+  font-size: 14px;
+  color: #666;
+  box-shadow: 0 2px 6px 0 rgba(27, 142, 236, 0.5);
+}
+
