@@ -1,5 +1,5 @@
 import './App.css';
-import {BaiduMap, Marker, InfoWindow, NavigationControl} from 'react-baidu-maps';
+import {BaiduMap, Marker, InfoWindow, NavigationControl, GeolocationControl} from 'react-baidu-maps';
 import data from './parse_json.json'
 import {useState} from "react";
 
@@ -40,6 +40,7 @@ function App() {
                     type="small"
                     anchor="top_right"
                     offset={{ width: 0, height: 30 }} />
+                <GeolocationControl />
             </BaiduMap>
         </div>
     );
