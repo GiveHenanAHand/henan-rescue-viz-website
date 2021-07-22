@@ -1,24 +1,18 @@
 import './App.css';
-import {BaiduMap, Marker, InfoWindow, NavigationControl, GeolocationControl, MarkerClusterer } from 'react-baidu-maps';
+import {BaiduMap, Marker, InfoWindow, NavigationControl, GeolocationControl, MarkerClusterer, asyncWrapper} from 'react-baidu-maps';
 import data from './parse_json.json'
 import {useState} from "react";
 
+const AsyncMap = asyncWrapper(BaiduMap);
+
 function App() {
-    const [timePreference, setTimePreference] = useState("see_all")
     const [timeRange, setTimeRange] = useState(8)
 
-    const MAX = 5;
-    const markerClusterer = [];
-    for (let i = 0; i < MAX; i++) {
-        markerClusterer.push({
-            lng: (Math.random() * 40) + 85,
-            lat: (Math.random() * 30) + 21
-        });
-    }
+    let markerClustererRef;
 
     let filterData = () => {
-        var filtered_data = []
-        if (timeRange == 12) {
+        let filtered_data = [];
+        if (timeRange === 12) {
             filtered_data = data
         } else {
             const currentTimestamp = Date.now()
@@ -31,7 +25,7 @@ function App() {
         return filtered_data.map(drawPoints)
     }
 
-    let drawPoints = (record) => <Marker position={
+    let drawPoints = (record) => <Marker key={record["link"]} position={
         {lng: record["location"]["lng"] + Math.random()/1000, lat: record["location"]["lat"] + Math.random()/1000}
     }>
         <InfoWindow content={
@@ -44,8 +38,8 @@ function App() {
     </Marker>
 
     let slider = () => {
-        var labelText = "最近"+timeRange+"小时"
-        if (timeRange == 12) {
+        let labelText = "最近" + timeRange + "小时";
+        if (timeRange === 12) {
             labelText = "全部记录"
         }
         return <label>
@@ -55,6 +49,7 @@ function App() {
     }
 
     let handleSliderChange = (e) => {
+        markerClustererRef && markerClustererRef.clearMarkers()
         setTimeRange(e.target.value)
     }
 
@@ -66,16 +61,23 @@ function App() {
                 {slider()}
             </div>
 
-            <BaiduMap defaultZoom={9} defaultCenter={{lng:113.802193, lat:34.820333}} mapContainer={<div className={"mapDiv"}/>}>
-                <MarkerClusterer>
+            <AsyncMap 
+                mapUrl={`https://api.map.baidu.com/api?v=2.0&ak=mTM4lv5gl2AenfvEuC8hV6DMGyWF4mBZ`}
+                loadingElement={<div style={{textAlign: 'center', fontSize: 40}}>Loading.....</div>}
+                enableScrollWheelZoom
+                enableDragging
+                defaultZoom={9} 
+                defaultCenter={{lng:113.802193, lat:34.820333}} 
+                mapContainer={<div className={"mapDiv"}/>}>
+                <MarkerClusterer ref={currentRef => (markerClustererRef = currentRef)}>
                     {filterData()}
-                </MarkerClusterer> 
+                </MarkerClusterer>
                 <NavigationControl
                     type="small"
                     anchor="top_right"
                     offset={{ width: 0, height: 30 }} />
                 <GeolocationControl />
-            </BaiduMap>
+            </AsyncMap>
         </div>
     );
 }
