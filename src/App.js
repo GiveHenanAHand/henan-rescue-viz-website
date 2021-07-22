@@ -14,7 +14,7 @@ function App() {
             latest_data.push(data[i])
         }
     }
-    let drawPoints = (record) => <Marker position={{lng: record["location"]["lng"] + Math.random()/1000, lat: record["location"]["lat"] + Math.random()/1000}}>
+    let drawPoints = (record) => <Marker position={{lng: record["location"]["lng"] + Math.random()/100, lat: record["location"]["lat"] + Math.random()/100}}>
         <InfoWindow content={
             `<div>${record["post"]}</div><div>原微博：<a target="_blank" rel="noopener noreferrer" href=${record["link"]}>${record["link"]}</a></div><div>发布时间: 7月${record["Time"].substring(8,10)}日 ${record["Time"].substring(11, 20)}</div>`} offset={{width: 0, height: -20}}/>
     </Marker>
