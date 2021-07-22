@@ -33,7 +33,7 @@ function App() {
                        onChange={timePreferenceOnChange}/>
                 <label htmlFor="see_latest">只看最近六小时</label>
             </div>
-            <BaiduMap defaultZoom={9} defaultCenter={data[0]["location"]} mapContainer={<div className={"mapDiv"}/>}>
+            <BaiduMap defaultZoom={9} defaultCenter={{lng:113.802193, lat:34.820333}} mapContainer={<div className={"mapDiv"}/>}>
                 {(timePreference === "see_all") && data.map(drawPoints)}
                 {(timePreference === "see_latest") && latest_data.map(drawPoints)}
                 <NavigationControl
