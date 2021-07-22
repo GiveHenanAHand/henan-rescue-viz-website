@@ -7,12 +7,12 @@ const AsyncMap = asyncWrapper(BaiduMap);
 
 function App() {
     const [timeRange, setTimeRange] = useState(8)
-    const [childKey, setChildKey] = useState(1);
-    const markerClustererRef = useRef(null);
+
+    let markerClustererRef;
 
     let filterData = () => {
-        var filtered_data = []
-        if (timeRange == 12) {
+        let filtered_data = [];
+        if (timeRange === 12) {
             filtered_data = data
         } else {
             const currentTimestamp = Date.now()
@@ -25,7 +25,7 @@ function App() {
         return filtered_data.map(drawPoints)
     }
 
-    let drawPoints = (record) => <Marker position={
+    let drawPoints = (record) => <Marker key={record["link"]} position={
         {lng: record["location"]["lng"] + Math.random()/1000, lat: record["location"]["lat"] + Math.random()/1000}
     }>
         <InfoWindow content={
@@ -38,8 +38,8 @@ function App() {
     </Marker>
 
     let slider = () => {
-        var labelText = "最近"+timeRange+"小时"
-        if (timeRange == 12) {
+        let labelText = "最近" + timeRange + "小时";
+        if (timeRange === 12) {
             labelText = "全部记录"
         }
         return <label>
@@ -49,7 +49,7 @@ function App() {
     }
 
     let handleSliderChange = (e) => {
-        setChildKey(prev => prev + 1)
+        markerClustererRef && markerClustererRef.clearMarkers()
         setTimeRange(e.target.value)
     }
 
@@ -69,9 +69,9 @@ function App() {
                 defaultZoom={9} 
                 defaultCenter={{lng:113.802193, lat:34.820333}} 
                 mapContainer={<div className={"mapDiv"}/>}>
-                    {/* <MarkerClusterer ref={markerClustererRef} key={childKey}>  */}
-                        {filterData()}
-                    {/* </MarkerClusterer> */}
+                <MarkerClusterer ref={currentRef => (markerClustererRef = currentRef)}>
+                    {filterData()}
+                </MarkerClusterer>
                 <NavigationControl
                     type="small"
                     anchor="top_right"
