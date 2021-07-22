@@ -46,6 +46,12 @@ jobs:
       with:
         name: production-files
         path: ./build
+    
+    - name: check dir
+      run: ls -al .
+    
+    - name: check build dir
+      run: ls-al ./build
 
     - uses: AEnterprise/rsync-deploy@v1.0
       env:
