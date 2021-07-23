@@ -8,7 +8,6 @@ import time
 
 import numpy as np
 import requests
-import schedule
 import xlrd
 from tqdm import tqdm
 
@@ -282,25 +281,15 @@ class Save(object):
     def Exec_timely(self):
         for i in tqdm(range(0, 50)):
             self.Acquisite_data("河南暴雨互助", page=i, stop_if_repeat=False)
-        # self.Acquisite_data("河南暴雨互助", page=0, stop_if_repeat=False)
-        self.Process_address()
-        self.Export()
+            self.Process_address()
+            self.Export()
 
 
 if __name__ == "__main__":
     args = parser.parse_args()
     S = Save(args.cache, args.output, args.api_key, args.api_secret)
 
-
-    def run():
+    while True:
         backup_if_exist(args.cache)
         backup_if_exist(args.output)
         S.Exec_timely()
-
-
-    schedule.every(30).minutes.do(lambda: run())
-
-    run()
-    while True:
-        schedule.run_pending()
-        time.sleep(60)
