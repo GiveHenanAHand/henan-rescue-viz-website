@@ -91,7 +91,7 @@ class Save(object):
         self.data = np.load(self.cache_path, allow_pickle=True)[()]
 
         params = {
-            'containerid': f'100103type=1&q={keyword}',
+            'containerid': '100103type=1&q=' + keyword,
             'page_type': 'searchall',
             'page': page
         }
