@@ -6,6 +6,8 @@
 ## 关于本项目
 我们通过爬虫把带有#河南暴雨求助#等相关微博获取后，使用本项目进行可视化，希望可以通过地图上的分布帮助到更多的人了解灾情的进展。
 
+[团队介绍与更新日志](https://u9u37118bj.feishu.cn/docs/doccn3QzzbeQLPQwNSb4Hcl2X1g#)
+
 ## 在本地运行
 `yarn install && yarn start`
 
