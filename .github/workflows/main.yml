@@ -7,6 +7,8 @@ on:
   pull_request:
     branches:
       - master
+  schedule:
+    - cron: '0/30 * * * *'
 
 jobs:
   build:
@@ -21,7 +23,22 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 13.x
-    
+
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v1
+      with:
+        python-version: '3.x' # Semantic version range syntax or exact version of a Python version
+        architecture: 'x64' # Optional - x64 or x86, defaults to x64
+
+    - name: run python script
+      env:
+        BAIDU_API_KEY: ${{secrets.BAIDU_API_KEY}}
+        BAIDU_SECRET_KEY: ${{secrets.BAIDU_SECRET_KEY}}
+      run: |
+        python -m pip install --upgrade pip
+#        pip install 
+#        python3 src/code_together.py
+
     - name: Install NPM packages
       run: npm ci
     
