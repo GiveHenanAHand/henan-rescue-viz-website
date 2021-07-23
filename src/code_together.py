@@ -5,20 +5,20 @@ import json
 import xlrd
 import xlwt
 import cpca
-from datetime import datetime, timezone
 import requests
 import numpy as np
 from tqdm import tqdm
+
 
 class Save(object):
     def __init__(self):
         pass
 
     def Load(self, path):
-        '''
+        """
         Used to load data from existing file
         useless now.
-        '''
+        """
 
         self.data = dict()
 
@@ -63,12 +63,12 @@ class Save(object):
         np.save("latest_data", self.data)
 
     def Acquisite_data(self, keyword="暴雨互助", page=10, stop_if_repeat=True):
-        '''
+        """
         Acquisite data from weibo
         Keyword : keyword for search
         Page : pages of data to climb
         Stop if repeat : only crawl the latest one when True, also crawl history when False
-        '''
+        """
 
         self.data = np.load("latest_data.npy", allow_pickle=True)[()]
 
@@ -84,37 +84,43 @@ class Save(object):
 
         cnt = 0
         for i in detail_url:
-            time.sleep(1)
-            id = i[-16:]
-            if id in self.data:
-                if stop_if_repeat:
-                    break
+            try:
+                id = i[-16:]
+                if id in self.data:
+                    if stop_if_repeat:
+                        break
+                    else:
+                        continue
                 else:
-                    continue
-            else:
-                self.data[id] = dict()
+                    self.data[id] = dict()
+                time.sleep(1)
 
-            response = requests.get(i).text
-            data = re.findall("var \$render_data = \[({.*})]\[0]", response, re.DOTALL)[0]
-            data = json.loads(data)['status']
+                response = requests.get(i).text
+                data = re.findall("var \$render_data = \[({.*})]\[0]", response, re.DOTALL)[0]
+                data = json.loads(data)['status']
 
-            created_at_time = data['created_at']
-            log_text = data['text']
-            log_text = re.sub('<.*?>', '', log_text)
+                created_at_time = data['created_at']
+                log_text = data['text']
+                log_text = re.sub('<.*?>', '', log_text)
 
-            print(created_at_time, i, log_text)
-            self.data[id]['time'] = created_at_time
-            self.data[id]['link'] = i
-            self.data[id]['post'] = log_text
+                print(created_at_time, i, log_text)
+                self.data[id]['time'] = created_at_time
+                self.data[id]['link'] = i
+                self.data[id]['post'] = log_text
+                self.data[id]['valid'] = 1
 
-            cnt += 1
+                cnt += 1
+            except Exception:
+                print("weibo fetching error")
 
         print("aquisite %d info" % cnt)
 
+        np.save("latest_data", self.data)
+
     def Process_content(self, Content):
-        '''
+        """
         Preprocessing the content from weibo to get an accurate address processing
-        '''
+        """
         Content = list(Content)
         lst = -1
         if "#" in Content:
@@ -134,9 +140,9 @@ class Save(object):
         return Content.strip()
 
     def Query_baidu(self, Content):
-        '''
+        """
         Query content in Baidu to get the address
-        '''
+        """
 
         API_KEY = 'Your API Key'
         SECRET_KEY = 'Your Secret Key'
@@ -177,9 +183,9 @@ class Save(object):
         return Result
 
     def Process_address(self):
-        '''
+        """
         Process address in data by querying Baidu api
-        '''
+        """
 
         self.data = np.load("latest_data.npy", allow_pickle=True)[()]
 
@@ -187,7 +193,7 @@ class Save(object):
 
         cnt = 0
         for id in tqdm(ID):
-            if not 'address' in self.data[id]:
+            if not 'address' in self.data[id] and 'post' in self.data[id]:
                 self.data[id]['address'] = ''
                 self.data[id]['location'] = ''
                 Q = self.Query_baidu(self.data[id]['post'])
@@ -200,10 +206,10 @@ class Save(object):
         np.save("latest_data", self.data)
 
     def Export(self):
-        '''
+        """
         Used to export data for visualization,
         data in json format
-        '''
+        """
 
         self.data = np.load("latest_data.npy", allow_pickle=True)[()]
 
@@ -214,7 +220,7 @@ class Save(object):
         for id in ID:
             v = self.data[id]
 
-            if 'address' in v and "河南" in v['address']:
+            if 'address' in v and "河南" in v['address'] and v['valid'] == 1:
                 news.append({"Time": v['time'], "address": v['address'], "location": v['location'], "post": v['post'],
                              "link": v["link"]})
 
@@ -223,46 +229,54 @@ class Save(object):
 
         print("Export %d info" % len(news))
 
-    def Update_Saved(self):
+    def Update_Saved(self, del_id='0', del_keywords='error'):
         """
-        To check if the weibo is still active
-        Deleting weibos that are deleted by owner or still there for more than 3 days
+        Update the info that has been saved.
         """
+
         self.data = np.load("latest_data.npy", allow_pickle=True)[()]
 
-        res = {}
-        for k, v in self.data.items():
-            # check if it exceeds the max check times
-            try:
-                # TODO: why is this weibo still here? may need manual work from authorized persons
+        ID = self.data.keys()
 
-                # check if it needs to be revisit
-                utc_dt = datetime.now(timezone.utc)  # UTC time
-                current_time = utc_dt.astimezone()  # local time
-                created = datetime.strptime(v['time'], '%a %b %d %H:%M:%S %z %Y')
-                delta = current_time - created
-                if delta.total_seconds() >= 3600*24*3:
-                    continue
-                # check if it's still active
-                text = requests.get(v['link']).text
-                if re.search("微博不存在或暂无查看权限!", text):
-                    continue
-                else:
-                    res[k] = v
-            except Exception as e:
-                # keeps current one
-                res[k] = v
+        for id in ID:
+            if not 'valid' in self.data[id]:
+                self.data[id]['valid'] = 1
 
-        np.save("latest_data", res)
+            if self.data[id]['valid'] == 0:
+                continue
+
+            if del_keywords in self.data[id]['post']:
+                print("delete " + self.data[id]['link'] + self.data[id]['post'])
+                self.data[id]['valid'] = 0
+
+        if del_id in ID:
+            self.data[del_id]['valid'] = 0
+            print("delete " + self.data[del_id]['post'])
+
+        np.save("latest_data", self.data)
+
+    def Recover(self, recover_id='0'):
+        self.data = np.load("latest_data.npy", allow_pickle=True)[()]
+
+        if recover_id in self.data:
+            self.data[recover_id]['valid'] = 1
+            print("recover " + self.data[recover_id]['post'])
+
+        np.save("latest_data", self.data)
 
     def Exec_timely(self):
-        self.Update_Saved()
-        self.Acquisite_data()
+        for i in tqdm(range(0, 50)):
+            self.Acquisite_data("河南暴雨互助", page=i, stop_if_repeat=False)
+        # self.Acquisite_data("河南暴雨互助", page=0, stop_if_repeat=False)
         self.Process_address()
         self.Export()
 
 
 if __name__ == "__main__":
     S = Save()
+
+    # S.Update_Saved(del_keywords="范冰冰")
+
+    # S.Recover("4661688706009874")
 
     S.Exec_timely()
