@@ -7,7 +7,6 @@ const AsyncMap = asyncWrapper(BaiduMap);
 function App() {
     const [timeRange, setTimeRange] = useState(8)
     const [data, setData] = useState([])
-    const [isFold, setFold] = useState(null)
 
     useEffect(() => {
         let xhr = new XMLHttpRequest();
@@ -47,36 +46,13 @@ function App() {
         } offset={{ width: 0, height: -20 }} />
     </Marker>
 
-    let slider = () => {
-        let labelText = "最近" + timeRange + "小时";
-        if (timeRange === 12) {
-            labelText = "全部记录"
-        }
-        return <label>
-            <input id="sliderRange" type="range" min="2" max="12" value={timeRange} onChange={handleSliderChange} step="2" />
-            {labelText}
-        </label>
+    let handleSliderChange = (value) => {
+        setTimeRange(value)
     }
-
-    let handleSliderChange = (e) => {
-        setTimeRange(e.target.value)
-    }
-
-    const onLeftFold = useCallback((e) => {
-        e.stopPropagation();
-        setFold(!isFold);
-    }, [isFold])
 
     return (
         <div className={"rootDiv"}>
-            <div className="info-container" data-fold={isFold}>
-                <div className="info" data-fold={isFold}>
-                    <div>本网站仅聚合新浪微博上发布的有关2021年7月河南暴雨的求助信息，请大家注意辨别信息真伪。点击标记点可以看到更多信息及原微博地址。</div>
-                    <br />
-                    {slider()}
-                </div>
-                <div className="left-fold" data-fold={isFold} onClick={onLeftFold}>{LEFT_FOLD}</div>
-            </div>
+            <InforHeader notifySliderChange={handleSliderChange}/>
             <AsyncMap
                 mapUrl={`https://api.map.baidu.com/api?v=2.0&ak=mTM4lv5gl2AenfvEuC8hV6DMGyWF4mBZ`}
                 loadingElement={<div style={{textAlign: 'center', fontSize: 40}}>Loading.....</div>}
@@ -95,6 +71,44 @@ function App() {
             </AsyncMap>
         </div>
     );
+}
+
+function InforHeader(props) {
+    const [isFold, setIsFold] = useState(false)
+    const [timeRange, setTimeRange] = useState(8)
+
+    const onLeftFold = useCallback((e) => {
+        e.stopPropagation();
+        setIsFold(!isFold);
+    }, [isFold])
+    
+
+    let handleSliderChange = (e) => {
+        setTimeRange(e.target.value)
+        props.notifySliderChange(e.target.value)
+    }
+
+    let slider = () => {
+        let labelText = "最近" + timeRange + "小时";
+        if (timeRange === 12) {
+            labelText = "全部记录"
+        }
+        return <label>
+            <input id="sliderRange" type="range" min="2" max="12" value={timeRange} onChange={handleSliderChange} step="2" />
+            {labelText}
+        </label>
+    }
+
+    return (
+            <div className="info-container" data-fold={isFold}>
+                <div className="info" data-fold={isFold}>
+                    <div>本网站仅聚合新浪微博上发布的有关2021年7月河南暴雨的求助信息，请大家注意辨别信息真伪。点击标记点可以看到更多信息及原微博地址。</div>
+                    <br />
+                    {slider()}
+                </div>
+                <div className="left-fold" data-fold={isFold} onClick={onLeftFold}>{LEFT_FOLD}</div>
+            </div>
+    )
 }
 
 export default App;
