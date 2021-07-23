@@ -5,6 +5,7 @@ import json
 import xlrd
 import xlwt
 import cpca
+from datetime import datetime, timezone
 import requests
 import numpy as np
 from tqdm import tqdm
@@ -61,12 +62,12 @@ class Save(object):
 
         np.save("latest_data", self.data)
 
-    def Acquisite_data(self, keyword = "暴雨互助", page=10, stop_if_repeat=True):
+    def Acquisite_data(self, keyword="暴雨互助", page=10, stop_if_repeat=True):
         '''
         Acquisite data from weibo
         Keyword : keyword for search
         Page : pages of data to climb
-        Stop if repeat : only climb the latest one when True, also climb history when False
+        Stop if repeat : only crawl the latest one when True, also crawl history when False
         '''
 
         self.data = np.load("latest_data.npy", allow_pickle=True)[()]
@@ -108,7 +109,7 @@ class Save(object):
 
             cnt += 1
 
-        print("aquisite %d info"%cnt)
+        print("aquisite %d info" % cnt)
 
     def Process_content(self, Content):
         '''
@@ -143,7 +144,7 @@ class Save(object):
         Content = self.Process_content(Content)
 
         host = 'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=%s&client_secret=%s' % (
-        API_KEY, SECRET_KEY)
+            API_KEY, SECRET_KEY)
         response = requests.get(host)
 
         Result = dict()
@@ -194,7 +195,7 @@ class Save(object):
                 self.data[id]['location'] = Q['location']
                 cnt += 1
 
-        print("Query %d info"%cnt)
+        print("Query %d info" % cnt)
 
         np.save("latest_data", self.data)
 
@@ -214,24 +215,52 @@ class Save(object):
             v = self.data[id]
 
             if 'address' in v and "河南" in v['address']:
-                news.append({"Time":v['time'], "address":v['address'], "location":v['location'], "post":v['post'], "link":v["link"]})
+                news.append({"Time": v['time'], "address": v['address'], "location": v['location'], "post": v['post'],
+                             "link": v["link"]})
 
         with open("final.json", "w", encoding="utf-8") as fp:
             json.dump(news, fp, ensure_ascii=False, indent=4)
 
-        print("Export %d info"%len(news))
+        print("Export %d info" % len(news))
 
     def Update_Saved(self):
-        '''
-        Update the info that has been saved.
-        '''
-        # TO DO
-        pass
+        """
+        To check if the weibo is still active
+        Deleting weibos that are deleted by owner or still there for more than 3 days
+        """
+        self.data = np.load("latest_data.npy", allow_pickle=True)[()]
+
+        res = {}
+        for k, v in self.data.items():
+            # check if it exceeds the max check times
+            try:
+                # TODO: why is this weibo still here? may need manual work from authorized persons
+
+                # check if it needs to be revisit
+                utc_dt = datetime.now(timezone.utc)  # UTC time
+                current_time = utc_dt.astimezone()  # local time
+                created = datetime.strptime(v['time'], '%a %b %d %H:%M:%S %z %Y')
+                delta = current_time - created
+                if delta.total_seconds() >= 3600*24*3:
+                    continue
+                # check if it's still active
+                text = requests.get(v['link']).text
+                if re.search("微博不存在或暂无查看权限!", text):
+                    continue
+                else:
+                    res[k] = v
+            except Exception as e:
+                # keeps current one
+                res[k] = v
+
+        np.save("latest_data", res)
 
     def Exec_timely(self):
+        self.Update_Saved()
         self.Acquisite_data()
         self.Process_address()
         self.Export()
+
 
 if __name__ == "__main__":
     S = Save()
