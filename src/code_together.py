@@ -1,18 +1,36 @@
+import argparse
+import datetime
+import json
 import os
 import re
+import shutil
 import time
-import json
-import xlrd
-import xlwt
-import cpca
-import requests
+
 import numpy as np
+import requests
+import schedule
+import xlrd
 from tqdm import tqdm
+
+parser = argparse.ArgumentParser(description='Scraper for henan flood-related weibo')
+parser.add_argument('--cache', type=str, default=None, help='cache numpy array')
+parser.add_argument('--output', type=str, default=None, help='output json file')
+parser.add_argument('--api_key', type=str, default=None, help='baidu API key')
+parser.add_argument('--api_secret', type=str, default=None, help='baidu API secret')
+
+
+def backup_if_exist(path):
+    now = datetime.datetime.now()
+    if os.path.exists(path):
+        shutil.copy(path, path + f".{now.strftime('%Y%m%d%H%M%S')}.old")
 
 
 class Save(object):
-    def __init__(self):
-        pass
+    def __init__(self, cache_path, output_path, api_key, api_secret):
+        self.cache_path = cache_path
+        self.output_path = output_path
+        self.api_key = api_key
+        self.api_secret = api_secret
 
     def Load(self, path):
         """
@@ -22,8 +40,8 @@ class Save(object):
 
         self.data = dict()
 
-        if os.path.exists("latest_data.npy"):
-            self.data = np.load("latest_data.npy", allow_pickle=True)[()]
+        if os.path.exists(self.cache_path):
+            self.data = np.load(self.cache_path, allow_pickle=True)[()]
 
         if 'xlsx' in path:
             workBook = xlrd.open_workbook(path)
@@ -70,7 +88,7 @@ class Save(object):
         Stop if repeat : only crawl the latest one when True, also crawl history when False
         """
 
-        self.data = np.load("latest_data.npy", allow_pickle=True)[()]
+        self.data = np.load(self.cache_path, allow_pickle=True)[()]
 
         params = {
             'containerid': f'100103type=1&q={keyword}',
@@ -144,13 +162,10 @@ class Save(object):
         Query content in Baidu to get the address
         """
 
-        API_KEY = 'Your API Key'
-        SECRET_KEY = 'Your Secret Key'
-
         Content = self.Process_content(Content)
 
-        host = 'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=%s&client_secret=%s' % (
-            API_KEY, SECRET_KEY)
+        host = 'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=%s&client_secret=%s' \
+               % (self.api_key, self.api_secret)
         response = requests.get(host)
 
         Result = dict()
@@ -187,7 +202,7 @@ class Save(object):
         Process address in data by querying Baidu api
         """
 
-        self.data = np.load("latest_data.npy", allow_pickle=True)[()]
+        self.data = np.load(self.cache_path, allow_pickle=True)[()]
 
         ID = self.data.keys()
 
@@ -211,7 +226,7 @@ class Save(object):
         data in json format
         """
 
-        self.data = np.load("latest_data.npy", allow_pickle=True)[()]
+        self.data = np.load(self.cache_path, allow_pickle=True)[()]
 
         news = []
 
@@ -224,7 +239,7 @@ class Save(object):
                 news.append({"Time": v['time'], "address": v['address'], "location": v['location'], "post": v['post'],
                              "link": v["link"]})
 
-        with open("final.json", "w", encoding="utf-8") as fp:
+        with open(self.output_path, "w", encoding="utf-8") as fp:
             json.dump(news, fp, ensure_ascii=False, indent=4)
 
         print("Export %d info" % len(news))
@@ -234,7 +249,7 @@ class Save(object):
         Update the info that has been saved.
         """
 
-        self.data = np.load("latest_data.npy", allow_pickle=True)[()]
+        self.data = np.load(self.cache_path, allow_pickle=True)[()]
 
         ID = self.data.keys()
 
@@ -256,7 +271,7 @@ class Save(object):
         np.save("latest_data", self.data)
 
     def Recover(self, recover_id='0'):
-        self.data = np.load("latest_data.npy", allow_pickle=True)[()]
+        self.data = np.load(self.cache_path, allow_pickle=True)[()]
 
         if recover_id in self.data:
             self.data[recover_id]['valid'] = 1
@@ -273,10 +288,19 @@ class Save(object):
 
 
 if __name__ == "__main__":
-    S = Save()
+    args = parser.parse_args()
+    S = Save(args.cache, args.output, args.api_key, args.api_secret)
 
-    # S.Update_Saved(del_keywords="范冰冰")
 
-    # S.Recover("4661688706009874")
+    def run():
+        backup_if_exist(args.cache)
+        backup_if_exist(args.output)
+        S.Exec_timely()
 
-    S.Exec_timely()
+
+    schedule.every(30).minutes.do(lambda: run())
+
+    run()
+    while True:
+        schedule.run_pending()
+        time.sleep(60)
