@@ -77,7 +77,7 @@ class Save(object):
                 self.data[id]['post'] = v['post']
                 self.data[id]['link'] = v['link']
 
-        np.save("latest_data", self.data)
+        np.save(self.cache_path, self.data)
 
     def Acquisite_data(self, keyword="暴雨互助", page=10, stop_if_repeat=True):
         """
@@ -132,7 +132,7 @@ class Save(object):
 
         print("aquisite %d info" % cnt)
 
-        np.save("latest_data", self.data)
+        np.save(self.cache_path, self.data)
 
     def Process_content(self, Content):
         """
@@ -217,7 +217,7 @@ class Save(object):
 
         print("Query %d info" % cnt)
 
-        np.save("latest_data", self.data)
+        np.save(self.cache_path, self.data)
 
     def Export(self):
         """
@@ -267,7 +267,7 @@ class Save(object):
             self.data[del_id]['valid'] = 0
             print("delete " + self.data[del_id]['post'])
 
-        np.save("latest_data", self.data)
+        np.save(self.cache_path, self.data)
 
     def Recover(self, recover_id='0'):
         self.data = np.load(self.cache_path, allow_pickle=True)[()]
@@ -276,7 +276,7 @@ class Save(object):
             self.data[recover_id]['valid'] = 1
             print("recover " + self.data[recover_id]['post'])
 
-        np.save("latest_data", self.data)
+        np.save(self.cache_path, self.data)
 
     def Exec_timely(self):
         for i in tqdm(range(0, 50)):
