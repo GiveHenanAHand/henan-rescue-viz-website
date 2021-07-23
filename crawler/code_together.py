@@ -22,7 +22,7 @@ parser.add_argument('--api_secret', type=str, default=None, help='baidu API secr
 def backup_if_exist(path):
     now = datetime.datetime.now()
     if os.path.exists(path):
-        shutil.copy(path, path + f".{now.strftime('%Y%m%d%H%M%S')}.old")
+        shutil.copy(path, path + "." + now.strftime('%Y%m%d%H%M%S') + ".old")
 
 
 class Save(object):
