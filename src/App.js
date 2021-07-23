@@ -1,14 +1,20 @@
 import './App.css';
-import {BaiduMap, Marker, InfoWindow, NavigationControl, GeolocationControl, MarkerClusterer, asyncWrapper} from 'react-baidu-maps';
-import data from './parse_json.json'
+import {BaiduMap, Marker, InfoWindow, NavigationControl, GeolocationControl, asyncWrapper} from 'react-baidu-maps';
 import {useState} from "react";
 
 const AsyncMap = asyncWrapper(BaiduMap);
 
 function App() {
     const [timeRange, setTimeRange] = useState(8)
-
-    let markerClustererRef;
+    const [data, setData] = useState([])
+    let xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        if (data.length === 0) {
+            setData(JSON.parse(xhr.responseText));
+        }
+    };
+    xhr.open("GET", "https://api-henan.tianshili.me/parse_json.json");
+    xhr.send()
 
     let filterData = () => {
         let filtered_data = [];
@@ -49,7 +55,6 @@ function App() {
     }
 
     let handleSliderChange = (e) => {
-        markerClustererRef && markerClustererRef.clearMarkers()
         setTimeRange(e.target.value)
     }
 
@@ -69,9 +74,7 @@ function App() {
                 defaultZoom={9} 
                 defaultCenter={{lng:113.802193, lat:34.820333}} 
                 mapContainer={<div className={"mapDiv"}/>}>
-                {/*<MarkerClusterer ref={currentRef => (markerClustererRef = currentRef)}>*/}
                     {filterData()}
-                {/*</MarkerClusterer>*/}
                 <NavigationControl
                     type="small"
                     anchor="top_right"
