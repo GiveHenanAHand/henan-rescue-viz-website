@@ -47,6 +47,10 @@ function BaiduMap(props) {
         props.handleBoundChanged(visibleBounds)
     }
 
+    function onWindowCloseClick() {
+        onClickMarker(focus)
+    }
+
     let infoMarkers = Object.entries(props.data).map(
         ([link, entry]) =>
             <InfoMarker key={entry.record.link} record={entry.record} latLong={entry.latLong} onClickMarker={onClickMarker}/>)
@@ -62,7 +66,10 @@ function BaiduMap(props) {
                 <ZoomControl/>
                 <ScaleControl/>
                 {infoMarkers}
-                <InfoWindow item={props.data[focus]} shouldAutoCenter={shouldAutoFocus}/>
+                <InfoWindow 
+                    item={props.data[focus]} 
+                    shouldAutoCenter={shouldAutoFocus} 
+                    onCloseClick={onWindowCloseClick}/>
             </Map>
 }
 
