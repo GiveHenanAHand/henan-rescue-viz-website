@@ -1,12 +1,11 @@
 import './App.css';
 import {Map, ScaleControl, ZoomControl} from 'react-bmapgl';
 import React, {useEffect, useState, useCallback} from "react";
-import {InfoMarker} from "./InfoMarker";
-import { InfoHeader } from "./components";
+import { InfoHeader,InfoMarker } from "./components";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
-    const [timeRange, setTimeRange] = useState(8)
+    const [timeRange, setTimeRange] = useState(6)
     const [data, setData] = useState({})
     const [focus, setFocus] = useState("")
     const [bounds, setBounds] = useState(null)
