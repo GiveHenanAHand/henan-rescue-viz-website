@@ -3,7 +3,7 @@ import {Map, ScaleControl, ZoomControl} from 'react-bmapgl';
 import React, {useEffect, useState} from "react";
 import {InfoMarker} from "./InfoMarker";
 import { InfoHeader } from "./components";
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
     const [timeRange, setTimeRange] = useState(8)
