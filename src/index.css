@@ -33,7 +33,7 @@ body {
 .info-container {
   z-index: 999;
   /*width: auto;*/
-  max-width: 30%;
+  max-width: 35%;
   max-height: 80%;
   display: flex;
   flex-direction: column;
@@ -50,9 +50,18 @@ body {
   transition: transform 0.3s;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 900px) {
   .info-container {
-    max-width: 80%;
+    max-width: 45%;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .info-container {
+    max-width: unset;
+    width: auto;
+    left: 0;
+    right: 0;
   }
 }
 
@@ -68,7 +77,8 @@ body {
   margin-top: 10px;
   margin-right: 30px;
   background-color: white;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   border: darkgray 1px solid;
 }
 
@@ -84,6 +94,7 @@ body {
 }
 
 .info-item-footer {
+  display: flex;
   margin-top: 10px;
   font-size: 14px;
 }
