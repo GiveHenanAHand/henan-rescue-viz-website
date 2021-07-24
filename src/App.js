@@ -1,8 +1,9 @@
 import React, {useEffect, useState, useCallback} from "react";
-import {Map, ScaleControl, ZoomControl} from 'react-bmapgl';
+import {CustomOverlay, Map, ScaleControl, ZoomControl} from 'react-bmapgl';
 import { InfoHeader,InfoMarker } from "./components";
 import './styles/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {Card} from "antd";
 
 function App() {
     const [timeRange, setTimeRange] = useState(6)
@@ -102,6 +103,31 @@ function App() {
         ([link, entry]) =>
             <InfoMarker key={entry.record.link} record={entry.record} latLong={entry.latLong} time={entry.time} focus={focus} onClickMarker={onClickMarker}/>)
 
+    let infoWindow = (link) => {
+        if (!link || link.length === 0) return null
+
+        const item = filterData()[link]
+        if (typeof (item) === 'undefined') return null
+
+        return <CustomOverlay
+            position={item.record.location}
+            // onClickclose={onClickMarker()(item.record.link)}
+            onClickclose={() => console.log("testtest")}
+            autoViewport={true}>
+                <Card>
+                    <div>
+                        发布时间: 7月{item.time.substring(8, 10)}日
+                        {item.time.substring(11, 20)}</div>
+                    <div>{item.record.post}</div>
+                    <hr />
+                    <div>原微博：
+                    <a target="_blank" rel="noopener noreferrer"
+                        href={item.record.link}>{item.record.link}</a>
+                    </div>
+                </Card>
+            </CustomOverlay>
+    }
+
     return (
         <div className={"rootDiv"}>
             <InfoHeader list={Object.values(filterData()).map(e => e.record)} bounds={bounds} notifySliderChange={handleSliderChange}/>
@@ -117,6 +143,7 @@ function App() {
                 <ZoomControl/>
                 <ScaleControl/>
                 {infoMarkers}
+                {infoWindow(focus)}
             </Map>
         </div>
     );

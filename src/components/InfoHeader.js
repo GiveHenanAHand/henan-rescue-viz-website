@@ -10,10 +10,8 @@ function InfoHeader(props) {
     const [displayList, setDisplayList] = useState([])
 
     useEffect(() => {
-        console.log("message from header")
-        console.log(props.bounds)
-
         if (props.bounds == null) return
+
         const list = props.list.filter(e => props.bounds.containsPoint(e.location))
         setDisplayList(list)
     }, [props.list, props.bounds])
