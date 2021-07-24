@@ -14,7 +14,7 @@ function InfoMarker(props) {
         setRefreshStr(prevState => prevState+" ")
     }
 
-    let marker = <Marker key={props.record.link} 
+    let marker = <Marker icon={"loc_red"} key={props.record.link}
                             position={basePosition} 
                             onClick={props.onClickMarker(props.record.link)}/>
 
