@@ -34,8 +34,8 @@ function InfoHeader(props) {
                     <br />
                     {slider()}
                     <a className="aboutButton" href="https://u9u37118bj.feishu.cn/docs/doccn3QzzbeQLPQwNSb4Hcl2X1g" target="_blank">关于我们</a>
-                    <a className="aboutButton" href="https://u9u37118bj.feishu.cn/sheets/shtcnh4177SPTo2N8NglZHCirDe" target="_blank">同步数据表格</a>
-                    <a className="aboutButton" href="https://wenjuan.feishu.cn/m?t=s0bhoU9zhpui-kbad" target="_blank">需求反馈</a>
+                    <a className="aboutButton" href="https://u9u37118bj.feishu.cn/sheets/shtcnh4177SPTo2N8NglZHCirDe" target="_blank">实时数据表格</a>
+                    <a className="aboutButton" href="https://www.wjx.cn/vj/PfjWt3C.aspx" target="_blank">需求反馈</a>
                 </div>
                 <div className="left-fold" data-fold={isFold} onClick={onLeftFold}>{LEFT_FOLD}</div>
             </div>
