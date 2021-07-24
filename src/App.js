@@ -1,23 +1,12 @@
 import React, {useEffect, useState, useCallback, useMemo} from "react";
-import {Map, ScaleControl, ZoomControl} from 'react-bmapgl';
-import { InfoHeader,InfoMarker,InfoWindow } from "./components";
+import { Map, ScaleControl, ZoomControl} from 'react-bmapgl';
+import { BaiduMap, InfoHeader,InfoMarker,InfoWindow } from "./components";
 import './styles/App.css';
 
 function App() {
     const [timeRange, setTimeRange] = useState(6)
     const [data, setData] = useState({})
-    const [focus, setFocus] = useState("")
-    const [shouldAutoFocus, setShouldAutoFocus] = useState(true)
     const [bounds, setBounds] = useState(null)
-
-    function onClickMarker(link){
-        setShouldAutoFocus(true)
-        if (focus == link) {
-            setFocus("")
-        } else {
-            setFocus(link)
-        }
-    }
 
     useEffect(() => {
         console.log("enter page")
@@ -68,56 +57,16 @@ function App() {
         setTimeRange(e);
     }
 
-    const mapRef = useCallback(node => {
-        if (node !== null && bounds == null) {
-            const map = node.map
-            updateBounds('init', map)
-            map.addEventListener('moveend', () => {
-                updateBounds('moveend', map)
-            })
-            map.addEventListener('zoomend', () => {
-                updateBounds('zoomend', map)
-            })
-        }
-    }, []);
-
-    let lastUpdateTime = Date.now()
-    const updateBounds = (type, map) => {
-        const offset = Date.now() - lastUpdateTime;
-        // infowindow/autoviewport triggers move/zoom event
-        // which leads infinite loop
-        // prevent frequent refreshing
-        if (offset < 500) return
-        if (map == null) return
-
-        lastUpdateTime = Date.now()
-
-        const visibleBounds = map.getBounds()
-        setShouldAutoFocus(false)
-        setBounds(visibleBounds)
+    function updateBounds(newBounds) {
+        setBounds(newBounds)
     }
-
-    let infoMarkers = Object.entries(filterData).map(
-        ([link, entry]) =>
-            <InfoMarker key={entry.record.link} record={entry.record} latLong={entry.latLong} onClickMarker={onClickMarker}/>)
 
     return (
         <div className={"rootDiv"}>
             <InfoHeader list={Object.values(filterData).map(e => e.record)} bounds={bounds} notifySliderChange={handleSliderChange}/>
-
-            <Map
-                enableScrollWheelZoom={true}
-                enableDragging={true}
-                zoom={9}
-                center={{lng: 113.802193, lat: 34.820333}}
-                className="mapDiv"
-                ref={mapRef}
-                style={{height: "100%"}}>
-                <ZoomControl/>
-                <ScaleControl/>
-                {infoMarkers}
-                <InfoWindow item={filterData[focus]} shouldAutoCenter={shouldAutoFocus}/>
-            </Map>
+            <BaiduMap 
+                data={filterData}
+                handleBoundChanged={updateBounds}/>
         </div>
     );
 }
