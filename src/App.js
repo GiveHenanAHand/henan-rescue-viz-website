@@ -1,9 +1,8 @@
 import React, {useEffect, useState, useCallback} from "react";
 import {CustomOverlay, Map, ScaleControl, ZoomControl} from 'react-bmapgl';
 import { InfoHeader,InfoMarker } from "./components";
+import { Card } from "antd";
 import './styles/App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import {Card} from "antd";
 
 function App() {
     const [timeRange, setTimeRange] = useState(6)
