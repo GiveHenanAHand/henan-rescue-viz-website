@@ -7223,6 +7223,11 @@
   dependencies:
     "object-visit" "^1.0.0"
 
+"mapvgl@^1.0.0-beta.130":
+  "integrity" "sha512-54djv3EeqYKqSFxG6QOIu1T0yYOWCIr+D484UOJaBHOZz8WEW5y6QLJfV/ftUYzjHBkXfqrqiwasH6w166imUQ=="
+  "resolved" "https://registry.npmjs.org/mapvgl/-/mapvgl-1.0.0-beta.130.tgz"
+  "version" "1.0.0-beta.130"
+
 "md5.js@^1.3.4":
   "integrity" "sha512-xitP+WxNPcTTOgnTJcrhM0xvdPepipPSf3I8EIpGKeFLjt3PlJLIDG3u8EX53ZIubkb+5U2+3rELYpEhHhzdkg=="
   "resolved" "https://registry.npmjs.org/md5.js/-/md5.js-1.3.5.tgz"
@@ -9020,7 +9025,7 @@
     "kleur" "^3.0.3"
     "sisteransi" "^1.0.5"
 
-"prop-types@^15.7.2", "prop-types@~15.7.2":
+"prop-types@^15.7.2":
   "integrity" "sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ=="
   "resolved" "https://registry.npmjs.org/prop-types/-/prop-types-15.7.2.tgz"
   "version" "15.7.2"
@@ -9196,13 +9201,15 @@
     "regenerator-runtime" "^0.13.7"
     "whatwg-fetch" "^3.4.1"
 
-"react-baidu-maps@^1.0.13":
-  "integrity" "sha512-TopN7Y5NFZjAyZeECTB5o5IugbbISApNNgsdT/oYHtkpB3PQXckiQdstbGIyo4v4TwrdG+oqwFALSW2aaOa6ow=="
-  "resolved" "https://registry.npmjs.org/react-baidu-maps/-/react-baidu-maps-1.0.13.tgz"
-  "version" "1.0.13"
+"react-bmapgl@^0.1.23":
+  "integrity" "sha512-eTuKIvwx9ifT9ODC+WaNHCCqKyKCR/014N/YL2+sKpqyZ0x83EwMaTc0LCtStzreLHpAUWxd9j8Kxj16H+w58w=="
+  "resolved" "https://registry.npmjs.org/react-bmapgl/-/react-bmapgl-0.1.23.tgz"
+  "version" "0.1.23"
   dependencies:
-    "prop-types" "~15.7.2"
-    "scriptjs" "~2.5.9"
+    "mapvgl" "^1.0.0-beta.130"
+    "react" "^17.0.1"
+    "react-dom" "^17.0.1"
+    "shallowequal" "^1.1.0"
 
 "react-dev-utils@^11.0.3":
   "integrity" "sha512-dx0LvIGHcOPtKbeiSUM4jqpBl3TcY7CDjZdfOIcKeznE7BWr9dg0iPG90G5yfVQ+p/rGNMXdbfStvzQZEVEi4A=="
@@ -9234,7 +9241,7 @@
     "strip-ansi" "6.0.0"
     "text-table" "0.2.0"
 
-"react-dom@*", "react-dom@^17.0.2", "react-dom@>=16.3.0":
+"react-dom@*", "react-dom@^17.0.1", "react-dom@^17.0.2":
   "integrity" "sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA=="
   "resolved" "https://registry.npmjs.org/react-dom/-/react-dom-17.0.2.tgz"
   "version" "17.0.2"
@@ -9329,7 +9336,7 @@
   optionalDependencies:
     "fsevents" "^2.1.3"
 
-"react@*", "react@^17.0.2", "react@>= 16", "react@>=16.3.0", "react@17.0.2":
+"react@*", "react@^17.0.1", "react@^17.0.2", "react@>= 16", "react@17.0.2":
   "integrity" "sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA=="
   "resolved" "https://registry.npmjs.org/react/-/react-17.0.2.tgz"
   "version" "17.0.2"
@@ -9926,11 +9933,6 @@
     "ajv" "^6.12.5"
     "ajv-keywords" "^3.5.2"
 
-"scriptjs@~2.5.9":
-  "integrity" "sha512-qGVDoreyYiP1pkQnbnFAUIS5AjenNwwQBdl7zeos9etl+hYKWahjRTfzAZZYBv5xNHx7vNKCmaLDQZ6Fr2AEXg=="
-  "resolved" "https://registry.npmjs.org/scriptjs/-/scriptjs-2.5.9.tgz"
-  "version" "2.5.9"
-
 "select-hose@^2.0.0":
   "integrity" "sha1-Yl2GWPhlr0Psliv8N2o3NZpJlMo="
   "resolved" "https://registry.npmjs.org/select-hose/-/select-hose-2.0.0.tgz"
@@ -10075,6 +10077,11 @@
   dependencies:
     "inherits" "^2.0.1"
     "safe-buffer" "^5.0.1"
+
+"shallowequal@^1.1.0":
+  "integrity" "sha512-y0m1JoUZSlPAjXVtPPW70aZWfIL/dSP7AFkRnniLCrK/8MDKog3TySTBmckD+RObVxH0v4Tox67+F14PdED2oQ=="
+  "resolved" "https://registry.npmjs.org/shallowequal/-/shallowequal-1.1.0.tgz"
+  "version" "1.1.0"
 
 "shebang-command@^1.2.0":
   "integrity" "sha1-RKrGW2lbAzmJaMOfNj/uXer98eo="
