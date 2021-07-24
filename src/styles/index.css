@@ -50,9 +50,9 @@ body {
   transition: transform 0.3s;
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 1000px) {
   .info-container {
-    max-width: 45%;
+    max-width: 50%;
   }
 }
 

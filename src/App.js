@@ -80,10 +80,20 @@ function App() {
         }
     }, []);
 
+    let lastUpdateTime = Date.now()
     const updateBounds = (type, map) => {
-        if (map == null || focus !== "") return
+        const offset = Date.now() - lastUpdateTime;
 
-        console.log(`${type} end`)
+        // infowindow/autoviewport triggers move/zoom event
+        // which leads infinite loop
+        // prevent frequent refreshing
+        if (offset < 500) return
+
+        if (map == null) return
+
+        lastUpdateTime = Date.now()
+
+        // console.log(`${type} end`)
         const visibleBounds = map.getBounds()
         setBounds(visibleBounds)
     }

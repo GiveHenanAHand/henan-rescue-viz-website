@@ -9,7 +9,7 @@
 
 .info-list {
   margin-top: 10px;
-  margin-right: 30px !important;
+  margin-right: 25px !important;
   background-color: white;
   overflow-x: hidden;
   overflow-y: auto;
@@ -42,4 +42,11 @@
   float: right;
   font-size: 12px;
   color: #666;
+}
+
+.info-button-list {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }

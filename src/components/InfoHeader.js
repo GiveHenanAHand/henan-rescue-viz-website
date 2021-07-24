@@ -35,23 +35,19 @@ function InfoHeader(props) {
             labelText = "全部记录"
         }
         return <div className="slider-container">
-            <Row>
-                <Col span={8}>
+            <Row justify="center">
+                <Col span={12}>
                     <Slider defaultValue={8} step={2} min={2} max={12} onAfterChange={handleSliderChange}/>
                 </Col>
                 <Col className="label-col" span={6}>
                     <label>{labelText}</label>
                 </Col>
-                <Col span={6}>
-                    <Button type="primary" href="https://u9u37118bj.feishu.cn/docs/doccn3QzzbeQLPQwNSb4Hcl2X1g" target="_blank">关于我们</Button>
-                </Col>
-                <Col span={6}>
-                    <Button type="primary" href="https://u9u37118bj.feishu.cn/sheets/shtcnh4177SPTo2N8NglZHCirDe" target="_blank">实时数据表格</Button>
-                </Col>
-                <Col span={6}>
-                    <Button type="primary" href="https://www.wjx.cn/vj/PfjWt3C.aspx" target="_blank">需求反馈</Button>
-                </Col>
             </Row>
+            <div className="info-button-list">
+                <Button type="primary" href="https://u9u37118bj.feishu.cn/docs/doccn3QzzbeQLPQwNSb4Hcl2X1g" target="_blank">关于我们</Button>
+                <Button type="primary" href="https://u9u37118bj.feishu.cn/sheets/shtcnh4177SPTo2N8NglZHCirDe" target="_blank">实时数据表格</Button>
+                <Button type="primary" href="https://www.wjx.cn/vj/PfjWt3C.aspx" target="_blank">需求反馈</Button>
+            </div>
         </div>
     }
 
