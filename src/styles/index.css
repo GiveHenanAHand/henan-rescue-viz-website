@@ -73,44 +73,6 @@ body {
   visibility: hidden;
 }
 
-.info-list {
-  margin-top: 10px;
-  margin-right: 30px;
-  background-color: white;
-  overflow-x: hidden;
-  overflow-y: auto;
-  border: darkgray 1px solid;
-}
-
-.info-item {
-  display: block;
-  padding: 10px;
-  text-decoration: none;
-  border-top: gray 1px dotted;
-}
-
-.info-item:first-child {
-  border-top: none;
-}
-
-.info-item-footer {
-  display: flex;
-  margin-top: 10px;
-  font-size: 14px;
-}
-
-.info-item-link {
-  font-size: 12px;
-}
-
-.info-item-date {
-  margin-left: 10px;
-  display: inline;
-  float: right;
-  font-size: 12px;
-  color: #666;
-}
-
 .left-fold {
   position: absolute;
   top: 50%;

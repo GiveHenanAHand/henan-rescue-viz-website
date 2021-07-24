@@ -1,7 +1,7 @@
-import './App.css';
-import {Map, ScaleControl, ZoomControl} from 'react-bmapgl';
 import React, {useEffect, useState, useCallback} from "react";
+import {Map, ScaleControl, ZoomControl} from 'react-bmapgl';
 import { InfoHeader,InfoMarker } from "./components";
+import './styles/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
