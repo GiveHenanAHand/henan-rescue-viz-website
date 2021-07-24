@@ -100,13 +100,13 @@ function InforHeader(props) {
     }
 
     return (
-            <div className="info-container" data-fold={isFold}>
+            <div className="info-container" data-fold={isFold onClick={onLeftFold}}>
                 <div className="info" data-fold={isFold}>
                     <div>本网站仅聚合新浪微博上发布的有关2021年7月河南暴雨的求助信息，请大家注意辨别信息真伪。点击标记点可以看到更多信息及原微博地址。</div>
                     <br />
                     {slider()}
                 </div>
-                <div className="left-fold" data-fold={isFold} onClick={onLeftFold}>{LEFT_FOLD}</div>
+                <div className="left-fold" data-fold={isFold}>{LEFT_FOLD}</div>
             </div>
     )
 }
