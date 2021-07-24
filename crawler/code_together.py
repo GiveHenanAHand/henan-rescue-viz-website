@@ -5,6 +5,8 @@ import os
 import re
 import shutil
 import time
+from dateutil import tz
+from dateutil.parser import parse
 
 import numpy as np
 import requests
@@ -225,6 +227,8 @@ class Save(object):
         data in json format
         """
 
+        current_time = datetime.datetime.now(tz.UTC)
+
         self.data = np.load(self.cache_path, allow_pickle=True)[()]
 
         news = []
@@ -233,8 +237,8 @@ class Save(object):
 
         for id in ID:
             v = self.data[id]
-
-            if 'address' in v and "河南" in v['address'] and v['valid'] == 1:
+            if 'address' in v and "河南" in v['address'] and v['valid'] == 1\
+                    and current_time - parse(v['time']) < datetime.timedelta(hours=12):
                 news.append({"Time": v['time'], "address": v['address'], "location": v['location'], "post": v['post'],
                              "link": v["link"]})
 

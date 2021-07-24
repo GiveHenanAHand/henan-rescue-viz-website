@@ -1,7 +1,8 @@
 import './App.css';
 import { BaiduMap, Marker, InfoWindow, NavigationControl, GeolocationControl, MapTypeControl, asyncWrapper } from 'react-baidu-maps';
-import { useCallback, useEffect, useState } from "react";
-import { LEFT_FOLD } from './icon';
+import { useEffect, useState } from "react";
+import { InfoHeader } from "./components";
+
 const AsyncMap = asyncWrapper(BaiduMap);
 
 function App() {
@@ -52,7 +53,7 @@ function App() {
 
     return (
         <div className={"rootDiv"}>
-            <InforHeader notifySliderChange={handleSliderChange}/>
+            <InfoHeader notifySliderChange={handleSliderChange}/>
             <AsyncMap
                 mapUrl={`https://api.map.baidu.com/api?v=2.0&ak=mTM4lv5gl2AenfvEuC8hV6DMGyWF4mBZ`}
                 loadingElement={<div style={{textAlign: 'center', fontSize: 40}}>Loading.....</div>}
