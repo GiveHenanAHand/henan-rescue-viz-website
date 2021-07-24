@@ -1,10 +1,20 @@
-import { useCallback, useState } from "react";
+import {useCallback, useEffect, useState} from "react";
 import { LEFT_FOLD } from '../icon';
 import InfoList from "./InfoList";
 
 function InfoHeader(props) {
     const [isFold, setIsFold] = useState(false)
     const [timeRange, setTimeRange] = useState(8)
+    const [displayList, setDisplayList] = useState([])
+
+    useEffect(() => {
+        console.log("message from header")
+        console.log(props.bounds)
+
+        if (props.bounds == null) return
+        const list = props.list.filter(e => props.bounds.containsPoint(e.location))
+        setDisplayList(list)
+    }, [props.list, props.bounds])
 
     const onLeftFold = useCallback((e) => {
         e.stopPropagation();
@@ -36,7 +46,7 @@ function InfoHeader(props) {
                     {slider()}
                     <a className="aboutButton" href="https://u9u37118bj.feishu.cn/docs/doccn3QzzbeQLPQwNSb4Hcl2X1g" target="_blank">关于我们</a>
                 </div>
-                <InfoList list={props.list}/>
+                <InfoList list={displayList}/>
                 <div className="left-fold" data-fold={isFold} onClick={onLeftFold}>{LEFT_FOLD}</div>
             </div>
     )
