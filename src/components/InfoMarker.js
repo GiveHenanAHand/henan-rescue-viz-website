@@ -1,4 +1,4 @@
-import React, {useEffect, useState}  from "react";
+import React, { useState }  from "react";
 import {Marker, CustomOverlay} from "react-bmapgl";
 import {Alert} from 'react-bootstrap';
 
@@ -14,23 +14,23 @@ function InfoMarker(props) {
         setRefreshStr(prevState => prevState+" ")
     }
 
-    let marker = <Marker key={props.record['微博链接']} 
+    let marker = <Marker key={props.record.link} 
                             position={basePosition} 
-                            onClick={props.onClickMarker(props.record['微博链接'])}/>
+                            onClick={props.onClickMarker(props.record.link)}/>
 
     let infoWindow = <CustomOverlay
                         position={basePosition}
-                        onClickclose={props.onClickMarker(props.record['微博链接'])}
+                        onClickclose={props.onClickMarker(props.record.link)}
                         autoViewport={true}>
                         <Alert variant='light'>
                             <div>
-                                发布时间: 7月{props.record['时间'].substring(8, 10)}日 
-                                {props.record['时间'].substring(11, 20)}</div>
-                            <div>{props.record['微博内容']}</div>
+                                发布时间: 7月{props.record.Time.substring(8, 10)}日 
+                                {props.record.Time.substring(11, 20)}</div>
+                            <div>{props.record.post}</div>
                             <hr />
                             <div>{refreshStr}原微博：
                             <a target="_blank" rel="noopener noreferrer"
-                                href={props.record['微博链接']}>{props.record['微博链接']}</a>
+                                href={props.record.link}>{props.record.link}</a>
                             </div>
                         </Alert>
         </CustomOverlay>
@@ -38,7 +38,7 @@ function InfoMarker(props) {
     return (
             <div>
                 {marker}
-                {props.focus === props.record['微博链接'] && infoWindow}
+                {props.focus === props.record.link && infoWindow}
             </div>
         )
     
