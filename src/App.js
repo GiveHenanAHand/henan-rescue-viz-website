@@ -4,7 +4,6 @@ import React, {useEffect, useState} from "react";
 import {InfoMarker} from "./InfoMarker";
 import { InfoHeader } from "./components";
 
-
 function App() {
     const [timeRange, setTimeRange] = useState(8)
     const [data, setData] = useState({})
@@ -60,18 +59,6 @@ function App() {
         return currentFilteredData
     }
 
-    let slider = () => {
-        let labelText = "最近" + timeRange + "小时";
-        if (timeRange === 12) {
-            labelText = "全部记录"
-        }
-        return <label>
-            <input id="sliderRange" type="range" min="2" max="12" value={timeRange} onChange={handleSliderChange}
-                   step="2"/>
-            {labelText}
-        </label>
-    }
-
     let handleSliderChange = (e) => {
         setTimeRange(e);
     }
@@ -82,7 +69,7 @@ function App() {
 
     return (
         <div className={"rootDiv"}>
-            <InfoHeader notifySliderChange={handleSliderChange}/>
+            <InfoHeader list={Object.values(filterData()).map(e => e.record)} notifySliderChange={handleSliderChange}/>
 
             <Map
                 enableScrollWheelZoom={true}
