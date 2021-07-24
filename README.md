@@ -1,4 +1,4 @@
-![项目截图](screenshot.png)
+![项目截图](https://user-images.githubusercontent.com/8768646/126867438-14cd8d22-9ad1-4a6e-ae13-060b8467a90d.png)
 
 
 河南暴雨求助微博的地图可视化项目：https://henan.tianshili.me/
@@ -10,6 +10,7 @@
 
 ## 相关项目
 [后台与数据处理](https://github.com/GiveHenanAHand/henan-rescue-viz-data)
+
 
 ## 在本地运行
 `yarn install && yarn start`
