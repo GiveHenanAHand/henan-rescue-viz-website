@@ -24,8 +24,8 @@ function InfoMarker(props) {
                         autoViewport={true}>
                         <Alert variant='light'>
                             <div>
-                                发布时间: 7月{props.record.Time.substring(8, 10)}日 
-                                {props.record.Time.substring(11, 20)}</div>
+                                发布时间: 7月{props.time.substring(8, 10)}日
+                                {props.time.substring(11, 20)}</div>
                             <div>{props.record.post}</div>
                             <hr />
                             <div>{refreshStr}原微博：
