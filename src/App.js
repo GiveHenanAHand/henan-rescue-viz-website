@@ -30,8 +30,8 @@ function App() {
                         [serverDataEntry.link]: {
                             record: serverDataEntry,
                             latLong: {
-                                lng: serverDataEntry.lng + Math.random() / 1000,
-                                lat: serverDataEntry.lat + Math.random() / 1000
+                                lng: serverDataEntry.location.lng + Math.random() / 1000,
+                                lat: serverDataEntry.location.lat + Math.random() / 1000
                             }
                         }
                     }
