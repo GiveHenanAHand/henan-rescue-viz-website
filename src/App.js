@@ -21,21 +21,24 @@ function App() {
     }
 
     useEffect(() => {
-        let xhr = new XMLHttpRequest();
-        xhr.onload = function () {
-            if (Object.keys(data).length === 0) {
-                const serverData = JSON.parse(xhr.responseText)
-                let pointDict = Object.assign({}, ...serverData.map(
-                    (serverDataEntry) => (
-                        {
-                            [serverDataEntry.link]: {
-                                record: serverDataEntry,
-                                latLong: {
-                                    lng: serverDataEntry.location.lng + Math.random() / 1000,
-                                    lat: serverDataEntry.location.lat + Math.random() / 1000
-                                }
-                            }
+    let xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+        if (Object.keys(data).length === 0) {
+            const serverData = JSON.parse(xhr.responseText)
+            let pointDict = Object.assign({}, ...serverData.map(
+                (serverDataEntry) => (
+                    {
+                        [serverDataEntry.link]: {
+                            record: serverDataEntry,
+                            // including different ways to create the latLong and time fields to make it compatible
+                            // across different versions of json format; only for the transition phase
+                            latLong: {
+                                lng: (serverDataEntry.location && serverDataEntry.location.lng) || serverDataEntry.lng + Math.random() / 1000,
+                                lat: (serverDataEntry.location && serverDataEntry.location.lat) || serverDataEntry.lat + Math.random() / 1000
+                            },
+                            time: serverDataEntry.Time || serverDataEntry.time
                         }
+                    }
                     )));
                 setData(pointDict);
             }
@@ -53,7 +56,7 @@ function App() {
             currentFilteredData = Object.fromEntries(
                 Object.entries(data).filter(
                     ([link, currentDataEntry]) =>
-                        currentTimestamp - Date.parse(currentDataEntry.record.Time) < timeRange * 60 * 60 * 1000
+                        (currentTimestamp - Date.parse(currentDataEntry.time) < timeRange * 60 * 60 * 1000)
                 )
             );
         }
@@ -87,7 +90,7 @@ function App() {
 
     let infoMarkers = Object.entries(filterData()).map(
         ([link, entry]) =>
-            <InfoMarker key={entry.record.link} record={entry.record} latLong={entry.latLong} focus={focus} onClickMarker={onClickMarker}/>)
+            <InfoMarker key={entry.record.link} record={entry.record} latLong={entry.latLong} time={entry.time} focus={focus} onClickMarker={onClickMarker}/>)
 
     return (
         <div className={"rootDiv"}>
