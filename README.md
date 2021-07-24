@@ -8,6 +8,9 @@
 
 [团队介绍与更新日志](https://u9u37118bj.feishu.cn/docs/doccn3QzzbeQLPQwNSb4Hcl2X1g#)
 
+## 相关项目
+[后台与数据处理](https://github.com/GiveHenanAHand/henan-rescue-viz-data)
+
 ## 在本地运行
 `yarn install && yarn start`
 
