@@ -1,29 +1,29 @@
-import React, {useEffect, useState, useCallback} from "react";
-import {CustomOverlay, Map, ScaleControl, ZoomControl} from 'react-bmapgl';
-import { InfoHeader,InfoMarker } from "./components";
-import { Card } from "antd";
+import React, {useEffect, useState, useCallback, useMemo} from "react";
+import {Map, ScaleControl, ZoomControl} from 'react-bmapgl';
+import { InfoHeader,InfoMarker,InfoWindow } from "./components";
 import './styles/App.css';
 
 function App() {
     const [timeRange, setTimeRange] = useState(6)
     const [data, setData] = useState({})
     const [focus, setFocus] = useState("")
+    const [shouldAutoFocus, setShouldAutoFocus] = useState(true)
     const [bounds, setBounds] = useState(null)
 
-    let onClickMarker = (link) => {
-        return () => {
-            if (focus === link) {
-                setFocus("")
-            } else {
-                setFocus(link)
-            }
+    function onClickMarker(link){
+        setShouldAutoFocus(true)
+        if (focus == link) {
+            setFocus("")
+        } else {
+            setFocus(link)
         }
     }
 
     useEffect(() => {
-    let xhr = new XMLHttpRequest();
-    xhr.onload = function () {
-        if (Object.keys(data).length === 0) {
+        console.log("enter page")
+        let xhr = new XMLHttpRequest();
+        xhr.onload = function () {
+            if (Object.keys(data).length === 0) {
             const serverData = JSON.parse(xhr.responseText)
             let pointDict = Object.assign({}, ...serverData.map(
                 (serverDataEntry) => (
@@ -47,8 +47,9 @@ function App() {
         xhr.send()
     }, [])
 
-    let filterData = () => {
+    let filterData = useMemo(() => {
         let currentFilteredData;
+        console.log("update filter!")
         if (timeRange === 12) {
             currentFilteredData = data
         } else {
@@ -61,7 +62,7 @@ function App() {
             );
         }
         return currentFilteredData
-    }
+    }, [data, timeRange])
 
     let handleSliderChange = (e) => {
         setTimeRange(e);
@@ -83,53 +84,26 @@ function App() {
     let lastUpdateTime = Date.now()
     const updateBounds = (type, map) => {
         const offset = Date.now() - lastUpdateTime;
-
         // infowindow/autoviewport triggers move/zoom event
         // which leads infinite loop
         // prevent frequent refreshing
         if (offset < 500) return
-
         if (map == null) return
 
         lastUpdateTime = Date.now()
 
-        // console.log(`${type} end`)
         const visibleBounds = map.getBounds()
+        setShouldAutoFocus(false)
         setBounds(visibleBounds)
     }
 
-    let infoMarkers = Object.entries(filterData()).map(
+    let infoMarkers = Object.entries(filterData).map(
         ([link, entry]) =>
-            <InfoMarker key={entry.record.link} record={entry.record} latLong={entry.latLong} time={entry.time} focus={focus} onClickMarker={onClickMarker}/>)
-
-    let infoWindow = (link) => {
-        if (!link || link.length === 0) return null
-
-        const item = filterData()[link]
-        if (typeof (item) === 'undefined') return null
-
-        return <CustomOverlay
-            position={item.record.location}
-            // onClickclose={onClickMarker()(item.record.link)}
-            onClickclose={() => console.log("testtest")}
-            autoViewport={true}>
-                <Card>
-                    <div>
-                        发布时间: 7月{item.time.substring(8, 10)}日
-                        {item.time.substring(11, 20)}</div>
-                    <div>{item.record.post}</div>
-                    <hr />
-                    <div>原微博：
-                    <a target="_blank" rel="noopener noreferrer"
-                        href={item.record.link}>{item.record.link}</a>
-                    </div>
-                </Card>
-            </CustomOverlay>
-    }
+            <InfoMarker key={entry.record.link} record={entry.record} latLong={entry.latLong} onClickMarker={onClickMarker}/>)
 
     return (
         <div className={"rootDiv"}>
-            <InfoHeader list={Object.values(filterData()).map(e => e.record)} bounds={bounds} notifySliderChange={handleSliderChange}/>
+            <InfoHeader list={Object.values(filterData).map(e => e.record)} bounds={bounds} notifySliderChange={handleSliderChange}/>
 
             <Map
                 enableScrollWheelZoom={true}
@@ -142,7 +116,7 @@ function App() {
                 <ZoomControl/>
                 <ScaleControl/>
                 {infoMarkers}
-                {infoWindow(focus)}
+                <InfoWindow item={filterData[focus]} shouldAutoCenter={shouldAutoFocus}/>
             </Map>
         </div>
     );
