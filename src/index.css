@@ -43,10 +43,10 @@ body {
   font-size: 14px;
   color: #666;
   box-shadow: 0 2px 6px 0 rgba(27, 142, 236, 0.5);
-  transition: margin-left .3s;
+  transition: transform 0.3s;
 }
 .info-container[data-fold='true'] {
-  margin-left: -56rem;
+  transform: translateX(-95%);
 }
 
 .info[data-fold='true'] {
