@@ -1,12 +1,11 @@
 import './App.css';
 import {Map, ScaleControl, ZoomControl} from 'react-bmapgl';
 import React, {useEffect, useState} from "react";
-import {InfoMarker} from "./InfoMarker";
-import { InfoHeader } from "./components";
+import { InfoHeader,InfoMarker } from "./components";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
-    const [timeRange, setTimeRange] = useState(8)
+    const [timeRange, setTimeRange] = useState(6)
     const [data, setData] = useState({})
     const [focus, setFocus] = useState("")
 
@@ -28,11 +27,11 @@ function App() {
             let pointDict = Object.assign({}, ...serverData.map(
                 (serverDataEntry) => (
                     {
-                        [serverDataEntry.link]: {
+                        [serverDataEntry['微博链接']]: {
                             record: serverDataEntry,
                             latLong: {
-                                lng: serverDataEntry.location.lng + Math.random() / 1000,
-                                lat: serverDataEntry.location.lat + Math.random() / 1000
+                                lng: serverDataEntry['经度'] + Math.random() / 1000,
+                                lat: serverDataEntry['纬度'] + Math.random() / 1000
                             }
                         }
                     }
@@ -40,7 +39,7 @@ function App() {
             setData(pointDict);
         }
     };
-    xhr.open("GET", "https://api-henan.tianshili.me/parse_json.json");
+    xhr.open("GET", "https://gist.githubusercontent.com/DrustZ/924be8ed71ae11ce47e94b9a829494d8/raw/2dfa6180e350169c4d5c8065cee787293b5f4390/test.json")//"https://api-henan.tianshili.me/parse_json.json");
     xhr.send()
     }, [])
 
@@ -53,23 +52,11 @@ function App() {
             currentFilteredData = Object.fromEntries(
                 Object.entries(data).filter(
                     ([link, currentDataEntry]) =>
-                        currentTimestamp - Date.parse(currentDataEntry.record.Time) < timeRange * 60 * 60 * 1000
+                        currentTimestamp - Date.parse(currentDataEntry.record['时间']) < timeRange * 60 * 60 * 1000
                 )
             );
         }
         return currentFilteredData
-    }
-
-    let slider = () => {
-        let labelText = "最近" + timeRange + "小时";
-        if (timeRange === 12) {
-            labelText = "全部记录"
-        }
-        return <label>
-            <input id="sliderRange" type="range" min="2" max="12" value={timeRange} onChange={handleSliderChange}
-                   step="2"/>
-            {labelText}
-        </label>
     }
 
     let handleSliderChange = (e) => {
@@ -78,7 +65,7 @@ function App() {
 
     let infoMarkers = Object.entries(filterData()).map(
         ([link, entry]) =>
-            <InfoMarker key={entry.record.link} record={entry.record} latLong={entry.latLong} focus={focus} onClickMarker={onClickMarker}/>)
+            <InfoMarker key={entry.record['微博链接']} record={entry.record} latLong={entry.latLong} focus={focus} onClickMarker={onClickMarker}/>)
 
     return (
         <div className={"rootDiv"}>
