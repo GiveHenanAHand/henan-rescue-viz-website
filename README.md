@@ -1,4 +1,4 @@
-![项目截图](screenshot.png)
+![项目截图](https://user-images.githubusercontent.com/8768646/126867438-14cd8d22-9ad1-4a6e-ae13-060b8467a90d.png)
 
 
 河南暴雨求助微博的地图可视化项目：https://henan.tianshili.me/
@@ -7,6 +7,10 @@
 我们通过爬虫把带有#河南暴雨求助#等相关微博获取后，使用本项目进行可视化，希望可以通过地图上的分布帮助到更多的人了解灾情的进展。
 
 [团队介绍与更新日志](https://u9u37118bj.feishu.cn/docs/doccn3QzzbeQLPQwNSb4Hcl2X1g#)
+
+## 相关项目
+[后台与数据处理](https://github.com/GiveHenanAHand/henan-rescue-viz-data)
+
 
 ## 在本地运行
 `yarn install && yarn start`
