@@ -1,4 +1,5 @@
 import { Tag, Row, Col } from "antd"
+import { colorMap } from '../common/constant'
 
 function InfoItem(props) {
     const arr = props.info.category.split('_')
@@ -6,14 +7,6 @@ function InfoItem(props) {
     let type = ''
     if (arr.length > 1) {
         type = arr[1]
-    }
-
-    const colorMap = {
-        '求助': 'red',
-        '求救': '#EC2215',
-        '提供帮助': '#47AE53',
-        '帮助': '#47AE53',
-        '其他': '#3371BE',
     }
 
     const color = colorMap[category]
