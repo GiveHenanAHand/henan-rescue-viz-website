@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import {Map, ScaleControl, ZoomControl} from 'react-bmapgl';
-import { InfoMarker,InfoWindow } from ".";
+import { InfoMarker,InfoWindow,LocationControl } from ".";
 
 
 function BaiduMap(props) {
@@ -65,6 +65,7 @@ function BaiduMap(props) {
                 style={{height: "100%"}}>
                 <ZoomControl/>
                 <ScaleControl/>
+                <LocationControl/>
                 {infoMarkers}
                 <InfoWindow 
                     item={props.data.find(e => e.id === focus)}
