@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import { Marker } from "react-bmapgl";
 
 function InfoMarker(props) {
@@ -8,18 +8,16 @@ function InfoMarker(props) {
     }
 
     function onClick(){
-        console.log(props.item.id)
+        // console.log(props.item.id)
         props.onClickMarker(props.item.id)
     }
 
     // set top if is highlighted
     return (
-            <div>
-                <Marker icon={props.icon} key={props.item.id}
-                            position={basePosition}
-                            isTop={props.icon !== props.item.icon}
-                            onClick={onClick}/>
-            </div>
+            <Marker icon={props.icon} key={props.item.id}
+                        position={basePosition}
+                        isTop={props.icon !== props.item.icon}
+                        onClick={onClick}/>
         )
 }
 
