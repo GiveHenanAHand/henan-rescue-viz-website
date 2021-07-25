@@ -17,9 +17,7 @@
 
 .info-item {
   display: block;
-  padding: 10px;
   text-decoration: none;
-  border-top: gray 1px dotted;
 }
 
 .info-item:first-child {
