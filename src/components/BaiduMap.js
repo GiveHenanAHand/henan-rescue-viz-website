@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useMemo} from "react";
-import {Map, ScaleControl, ZoomControl} from 'react-bmapgl';
+import {Map, ScaleControl, ZoomControl, MapTypeControl} from 'react-bmapgl';
 import { InfoMarker,InfoWindow,LocationControl } from ".";
 
 
@@ -33,7 +33,6 @@ function BaiduMap(props) {
     let lastUpdateTime = Date.now()
     const updateBounds = (type, map) => {
         const offset = Date.now() - lastUpdateTime;
-        console.log('update timedif ', offset)
         // infowindow/autoviewport triggers move/zoom event
         // which leads infinite loop
         // prevent frequent refreshing
@@ -69,6 +68,7 @@ function BaiduMap(props) {
                 <ZoomControl/>
                 <ScaleControl/>
                 <LocationControl/>
+                <MapTypeControl mapTypes={['normal', 'satellite']}/>
                 { infoMarkers }
                 <InfoWindow 
                     item={props.data.find(e => e.id === focus)}

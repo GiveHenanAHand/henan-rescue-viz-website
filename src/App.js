@@ -28,8 +28,8 @@ function App() {
                 // including different ways to create the latLong and time fields to make it compatible
                 // across different versions of json format; only for the transition phase
                 item.location = {
-                    lng: ((item.location && item.location.lng) || item.lng) + Math.random() / 1000,
-                    lat: ((item.location && item.location.lat) || item.lat) + Math.random() / 1000
+                    lng: ((item.location && item.location.lng) || item.lng) + Math.random() / 150,
+                    lat: ((item.location && item.location.lat) || item.lat) + Math.random() / 150
                 }
                 item.time = item.Time || item.time
 
