@@ -83,7 +83,7 @@ function InfoHeader(props) {
                 itemLayout="horizontal"
                 bordered
                 dataSource={displayList}
-                locale={ { emptyText: '无数据' } }
+                locale={ { emptyText: props.defaultText } }
                 renderItem={item => (
                     <List.Item key={item.id} className={item.id === selectedId ? "selected-item" : ''} onClick={ () => { handleItemClicked(item) } }>
                         <InfoItem info={item} />
