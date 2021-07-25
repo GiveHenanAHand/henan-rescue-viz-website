@@ -1,15 +1,18 @@
-import {useCallback, useEffect, useState} from "react";
+import { useCallback, useEffect, useState } from "react";
 import { LEFT_FOLD } from '../icon';
-import {Button, Slider, Row, Col, Input, Select, List} from 'antd';
-import {SearchOutlined} from "@ant-design/icons";
-import InfoItem from "./InfoItem";
+import InfoList from "./InfoList";
+import { Button, Slider, Row, Col, Select, Tag } from 'antd';
+import { colorMap } from '../common/constant'
 import '../styles/InfoHeader.css'
-const { Option } = Select
+const options = Object.keys(colorMap).map(item => {
+    return { label: item, value: colorMap[item] }
+});
 
 function InfoHeader(props) {
     const [isFold, setIsFold] = useState(false)
     const [timeRange, setTimeRange] = useState(8)
     const [displayList, setDisplayList] = useState([])
+    const [category, setCategory] = useState([]);
 
     useEffect(() => {
         if (props.bounds == null) return
@@ -22,7 +25,6 @@ function InfoHeader(props) {
         e.stopPropagation();
         setIsFold(!isFold);
     }, [isFold])
-    
 
     let handleSliderChange = (value) => {
         setTimeRange(value)
@@ -37,7 +39,7 @@ function InfoHeader(props) {
         return <div className="slider-container">
             <Row justify="center">
                 <Col span={12}>
-                    <Slider defaultValue={8} step={2} min={2} max={12} onAfterChange={handleSliderChange}/>
+                    <Slider defaultValue={8} step={2} min={2} max={12} onAfterChange={handleSliderChange} />
                 </Col>
                 <Col className="label-col" span={6}>
                     <label>{labelText}</label>
@@ -51,39 +53,57 @@ function InfoHeader(props) {
         </div>
     }
 
+    const tagRender = (props) => {
+        const { label, value, closable, onClose } = props;
+        const onPreventMouseDown = event => {
+            event.preventDefault();
+            event.stopPropagation();
+        };
+        return (
+            <Tag
+                key={label}
+                color={value}
+                onMouseDown={onPreventMouseDown}
+                closable={closable}
+                onClose={onClose}
+                style={{ marginRight: 3 }}
+            >
+                {label}
+            </Tag>
+        );
+    }
+
+    const onSelectCategory = (value, options) => {
+        const cat = []
+        options.forEach(item => {
+            cat.push(item.label)
+        })
+        console.log('cat', cat);
+        setCategory(cat)
+    }
+
+    const dataList = category.length > 0 ? displayList.filter((item) => {
+        return category.indexOf(item.category.split('_')[0]) !== -1;
+    }) : displayList
     return (
-            <div className="info-container" data-fold={isFold}>
-                <div className="info" data-fold={isFold}>
-                    <div>本网站仅聚合新浪微博上发布的有关2021年7月河南暴雨的求助信息，请大家注意辨别信息真伪。点击标记点可以看到更多信息及原微博地址。</div>
-                    <br />
-                    {slider()}
-                </div>
-            <div className="info-list-header">
-                <Input placeholder="搜索"
-                       className="info-list-search"
-                       value={props.keyword}
-                       onChange={ e => props.notifyKeywordChange(e.target.value) }
-                       allowClear
-                       prefix={<SearchOutlined className="info-list-search-icon"/>}
-                       style={{ width: 200 }}
-                />
-                <Select defaultValue='' style={{width: 120}} onChange={value => props.notifyTypeChange(value)}>
-                    <Option value={''}>全选</Option>
-                    { props.categories.map(category => <Option value={category} key={category}>{category}</Option>) }
-                </Select>
+        <div className="info-container" data-fold={isFold}>
+            <div className="info" data-fold={isFold}>
+                <div>本网站仅聚合新浪微博上发布的有关2021年7月河南暴雨的求助信息，请大家注意辨别信息真伪。点击标记点可以看到更多信息及原微博地址。</div>
+                <br />
+                {slider()}
             </div>
-            <List
-                className="info-list"
-                itemLayout="horizontal"
-                dataSource={displayList}
-                renderItem={item => (
-                    <List.Item>
-                        <InfoItem info={item} key={item.link}/>
-                    </List.Item>
-                )}
-                />
-                <div className="left-fold" data-fold={isFold} onClick={onLeftFold}>{LEFT_FOLD}</div>
-            </div>
+            <Select
+                mode="multiple"
+                showArrow
+                tagRender={tagRender}
+                // defaultValue={Object.keys(colorMap)}
+                style={{ width: '100%' }}
+                options={options}
+                onChange={onSelectCategory}
+            />
+            <InfoList list={dataList} />
+            <div className="left-fold" data-fold={isFold} onClick={onLeftFold}>{LEFT_FOLD}</div>
+        </div>
     )
 }
 
