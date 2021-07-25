@@ -37,7 +37,7 @@ function BaiduMap(props) {
         // infowindow/autoviewport triggers move/zoom event
         // which leads infinite loop
         // prevent frequent refreshing
-        if (offset < 500) return
+        if (offset < 500 && bounds !== null) return
         if (map == null) return
 
         lastUpdateTime = Date.now()
