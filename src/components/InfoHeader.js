@@ -4,9 +4,7 @@ import InfoList from "./InfoList";
 import { Button, Slider, Row, Col, Select, Tag } from 'antd';
 import { colorMap } from '../common/constant'
 import '../styles/InfoHeader.css'
-const options = Object.keys(colorMap).map(item => {
-    return { label: item, value: colorMap[item] }
-});
+const options = Object.keys(colorMap).map(item => ({ label: item, value: colorMap[item] }));
 
 function InfoHeader(props) {
     const [isFold, setIsFold] = useState(false)
@@ -78,13 +76,10 @@ function InfoHeader(props) {
         options.forEach(item => {
             cat.push(item.label)
         })
-        console.log('cat', cat);
         setCategory(cat)
     }
 
-    const dataList = category.length > 0 ? displayList.filter((item) => {
-        return category.indexOf(item.category.split('_')[0]) !== -1;
-    }) : displayList
+    const dataList = category.length > 0 ? displayList.filter((item) => category.indexOf(item.category.split('_')[0]) !== -1) : displayList
     return (
         <div className="info-container" data-fold={isFold}>
             <div className="info" data-fold={isFold}>
