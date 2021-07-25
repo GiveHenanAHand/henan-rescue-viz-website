@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from "react";
-import {Map, ScaleControl, ZoomControl} from 'react-bmapgl';
+import React, {useState, useCallback, useMemo} from "react";
+import {Map, ScaleControl, ZoomControl, MapTypeControl} from 'react-bmapgl';
 import { InfoMarker,InfoWindow,LocationControl } from ".";
 
 
@@ -20,7 +20,7 @@ function BaiduMap(props) {
     const mapRef = useCallback(node => {
         if (node !== null && bounds == null) {
             const map = node.map
-            updateBounds('init', map)
+            // updateBounds('init', map)
             map.addEventListener('moveend', () => {
                 updateBounds('moveend', map)
             })
@@ -33,7 +33,6 @@ function BaiduMap(props) {
     let lastUpdateTime = Date.now()
     const updateBounds = (type, map) => {
         const offset = Date.now() - lastUpdateTime;
-        console.log('update timedif ', offset)
         // infowindow/autoviewport triggers move/zoom event
         // which leads infinite loop
         // prevent frequent refreshing
@@ -51,22 +50,26 @@ function BaiduMap(props) {
         onClickMarker(focus)
     }
 
-    let infoMarkers = props.data.map(
-        (entry) =>
-            <InfoMarker key={entry.id} item={entry} onClickMarker={onClickMarker}/>)
+    const infoMarkers = useMemo(() => {
+        return props.data.map( item => {
+                    // color in props.changeList has a higher priority
+                    return <InfoMarker key={item.id} item={item} icon={props.changeList[item.id] || item.icon} onClickMarker={onClickMarker}/>
+                })
+    }, [props.changeList, props.data])
 
     return <Map
                 enableScrollWheelZoom={true}
                 enableDragging={true}
                 zoom={9}
-                center={{lng: 113.802193, lat: 34.820333}}
+                center={props.center}
                 className="mapDiv"
                 ref={mapRef}
                 style={{height: "100%"}}>
                 <ZoomControl/>
                 <ScaleControl/>
                 <LocationControl/>
-                {infoMarkers}
+                <MapTypeControl mapTypes={['normal', 'satellite']}/>
+                { infoMarkers }
                 <InfoWindow 
                     item={props.data.find(e => e.id === focus)}
                     shouldAutoCenter={shouldAutoFocus} 

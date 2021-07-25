@@ -20,16 +20,14 @@ function InfoItem(props) {
 
     return <div className="info-item">
         <div className="info-item-content">{props.info.post}</div>
-        <Row className="info-item-footer">
-            <Col className="info-item-date">{ `7月${props.info.time.substring(8, 10)}日 ${props.info.Time.substring(11, 20)}` }</Col>
-            <Col >
-                <a className="info-item-link" href={props.info.link} target="_blank" rel="noopener noreferrer">原微博</a>
-            </Col>
-            <Col className="info-item-tag-list">
+        <div className="info-item-footer">
+            <label className="info-item-date">{ `7月${props.info.time.substring(8, 10)}日 ${props.info.Time.substring(11, 20)}` }</label>
+            <a className="info-item-link" href={props.info.link} target="_blank" rel="noopener noreferrer">原微博</a>
+            <div className="info-item-tag-list">
               <Tag color={color}>{category}</Tag>
                 { type.length > 0 ? <Tag color={color}>{type}</Tag> : null }
-            </Col>
-        </Row>
+            </div>
+        </div>
     </div>
 }
 

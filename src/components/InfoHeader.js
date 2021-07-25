@@ -10,6 +10,7 @@ function InfoHeader(props) {
     const [isFold, setIsFold] = useState(false)
     const [timeRange, setTimeRange] = useState(8)
     const [displayList, setDisplayList] = useState([])
+    const [selectedId, setSelectedId] = useState('')
 
     useEffect(() => {
         if (props.bounds == null) return
@@ -27,6 +28,11 @@ function InfoHeader(props) {
     let handleSliderChange = (value) => {
         setTimeRange(value)
         props.notifySliderChange(value)
+    }
+
+    let handleItemClicked = (item) => {
+        setSelectedId(item.id)
+        props.handleItemClick(item)
     }
 
     let slider = () => {
@@ -75,10 +81,12 @@ function InfoHeader(props) {
             <List
                 className="info-list"
                 itemLayout="horizontal"
+                bordered
                 dataSource={displayList}
+                locale={ { emptyText: '无数据' } }
                 renderItem={item => (
-                    <List.Item>
-                        <InfoItem info={item} key={item.link}/>
+                    <List.Item key={item.id} className={item.id === selectedId ? "selected-item" : ''} onClick={ () => { handleItemClicked(item) } }>
+                        <InfoItem info={item} />
                     </List.Item>
                 )}
                 />
