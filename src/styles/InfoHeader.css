@@ -62,3 +62,16 @@
 
 .info-item-tag-list {
 }
+
+.info-list-header {
+  display: flex;
+  justify-content: center;
+}
+
+.info-list-header .info-list-search {
+  margin-right: 20px;
+}
+
+.info-list-search-icon {
+  color: red;
+}
