@@ -6,6 +6,7 @@ function App() {
     const [timeRange, setTimeRange] = useState(6)
     const [data, setData] = useState([])
     const [bounds, setBounds] = useState(null)
+    const [listDefaultText, setListDefaultText] = useState("")
     // map center
     const [center, setCenter] = useState({ lng: 113.802193, lat: 34.820333 })
 
@@ -17,6 +18,7 @@ function App() {
     // changeList: (id -> icon) dict
     const [ changeList, setChangeList ] = useState({})
 
+    // Fetch data on init
     useEffect(() => {
         console.log("enter page")
         let xhr = new XMLHttpRequest();
@@ -62,6 +64,7 @@ function App() {
         return [...categories].sort().reverse()
     }, [data])
 
+    // [SECTION] Data generation
     let filterData = useMemo(() => {
         let currentFilteredData
         console.log("update filter!")
@@ -80,12 +83,18 @@ function App() {
         return currentFilteredData
     }, [data, timeRange, keyword, selectedType])
 
-    let handleSliderChange = (e) => {
+    // [SECTION] component call backs
+    function handleSliderChange(e) {
         setTimeRange(e)
     }
 
     function updateBounds(newBounds) {
         setBounds(newBounds)
+        setListDefaultText("无数据")
+    }
+
+    function handleMapInited() {
+        setListDefaultText("移动地图显示列表")
     }
 
     function handleInfoSelected(item) {
@@ -118,6 +127,7 @@ function App() {
                 bounds={bounds}
                 keyword={keyword}
                 categories={categories}
+                defaultText={listDefaultText}
                 notifySliderChange={handleSliderChange}
                 notifyKeywordChange={ e => setKeyword(e) }
                 notifyTypeChange={ e => setSelectedType(e) }
@@ -127,6 +137,7 @@ function App() {
                 data={filterData}
                 center={center}
                 changeList={changeList}
+                mapInited={handleMapInited}
                 handleBoundChanged={updateBounds}/>
         </div>
     )
