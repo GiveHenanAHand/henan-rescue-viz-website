@@ -1,8 +1,6 @@
 import { Tag, Row, Col } from "antd"
 
 function InfoItem(props) {
-    props.info.category = props.info.category || '其他'
-
     const arr = props.info.category.split('_')
     const category = arr[0]
     let type = ''
@@ -23,7 +21,7 @@ function InfoItem(props) {
     return <div className="info-item">
         <div className="info-item-content">{props.info.post}</div>
         <Row className="info-item-footer">
-            <Col className="info-item-date">{ `7月${props.info.Time.substring(8, 10)}日 ${props.info.Time.substring(11, 20)}` }</Col>
+            <Col className="info-item-date">{ `7月${props.info.time.substring(8, 10)}日 ${props.info.Time.substring(11, 20)}` }</Col>
             <Col >
                 <a className="info-item-link" href={props.info.link} target="_blank" rel="noopener noreferrer">原微博</a>
             </Col>

@@ -37,7 +37,7 @@ function InfoHeader(props) {
         return <div className="slider-container">
             <Row justify="center">
                 <Col span={12}>
-                    <Slider defaultValue={8} step={2} min={2} max={24} onAfterChange={handleSliderChange}/>
+                    <Slider defaultValue={8} step={2} min={2} max={12} onAfterChange={handleSliderChange}/>
                 </Col>
                 <Col className="label-col" span={6}>
                     <label>{labelText}</label>

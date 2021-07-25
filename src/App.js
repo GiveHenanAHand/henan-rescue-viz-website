@@ -4,13 +4,12 @@ import './styles/App.css';
 
 function App() {
     const [timeRange, setTimeRange] = useState(6)
-    const [data, setData] = useState({})
+    const [data, setData] = useState([])
     const [bounds, setBounds] = useState(null)
 
     // filter relevant states
     const [ keyword, setKeyword ] = useState('')
     const [ selectedType, setSelectedType ] = useState('')
-    // const [ categories, setCategories ] = useState([])
 
     useEffect(() => {
         console.log("enter page")
@@ -19,52 +18,52 @@ function App() {
             if (Object.keys(data).length !== 0) return
 
             const serverData = JSON.parse(xhr.responseText)
-            let pointDict = Object.assign({}, ...serverData.map(
-                (serverDataEntry) => (
-                    {
-                        [serverDataEntry.link]: {
-                            record: serverDataEntry,
-                            // including different ways to create the latLong and time fields to make it compatible
-                            // across different versions of json format; only for the transition phase
-                            latLong: {
-                                lng: (serverDataEntry.location && serverDataEntry.location.lng) || serverDataEntry.lng + Math.random() / 1000,
-                                lat: (serverDataEntry.location && serverDataEntry.location.lat) || serverDataEntry.lat + Math.random() / 1000
-                            },
-                            time: serverDataEntry.Time || serverDataEntry.time
-                        }
-                    }
-                )))
-            setData(pointDict)
+            const items = serverData.map(item => {
+                // including different ways to create the latLong and time fields to make it compatible
+                // across different versions of json format; only for the transition phase
+                item.location = {
+                    lng: (item.location && item.location.lng) || item.lng + Math.random() / 1000,
+                    lat: (item.location && item.location.lat) || item.lat + Math.random() / 1000
+                }
+                item.time = item.Time || item.time
+
+                // use last part of link as id
+                const arr = item.link.split('/')
+                item.id = arr[arr.length - 1]
+
+                // fill null category
+                item.category = item.category || '未分类'
+
+                item.isWeibo = item.link.startsWith('no_link')
+
+                return item
+            })
+
+            setData(items)
         };
         xhr.open("GET", "https://api-henan.tianshili.me/parse_json.json");
         xhr.send()
     })
 
     const categories = useMemo(() => {
-        const items = Object.values(data)
         console.log("update categories")
-        const categories = new Set(items.map(e => e.record.category ).filter(e => e && e.length > 0))
-        // setCategories()
+        const categories = new Set(data.map(e => e.category ).filter(e => e && e.length > 0))
 
         console.log(categories)
         return [...categories].sort().reverse()
     }, [data])
 
     let filterData = useMemo(() => {
-        let currentFilteredData;
+        let currentFilteredData
         console.log("update filter!")
 
         if (timeRange !== 12 || (keyword && keyword.length > 0) || selectedType.length > 0) {
             const beginTime = Date.now() - timeRange * 60 * 60 * 1000
-            currentFilteredData = Object.fromEntries(
-                Object.entries(data).filter(
-                    ([link, item]) => {
-                        return (Date.parse(item.time || item.record.Time) > beginTime) &&
-                            item.record.post.indexOf(keyword) > -1 &&
-                            item.record.category.indexOf(selectedType) > -1
-                    }
-                )
-            )
+            currentFilteredData = data.filter(item => {
+                        return (Date.parse(item.time) > beginTime) &&
+                            item.post.indexOf(keyword) > -1 &&
+                            item.category.indexOf(selectedType) > -1
+            })
         } else {
             currentFilteredData = data
         }
@@ -83,7 +82,7 @@ function App() {
     return (
         <div className={"rootDiv"}>
             <InfoHeader
-                list={Object.values(filterData).map(e => e.record)}
+                list={filterData}
                 bounds={bounds}
                 keyword={keyword}
                 categories={categories}

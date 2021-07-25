@@ -8,12 +8,12 @@ function BaiduMap(props) {
     const [bounds, setBounds] = useState(null)
     const [shouldAutoFocus, setShouldAutoFocus] = useState(true)
 
-    function onClickMarker(link){
+    function onClickMarker(id){
         setShouldAutoFocus(true)
-        if (focus === link) {
+        if (focus === id) {
             setFocus("")
         } else {
-            setFocus(link)
+            setFocus(id)
         }
     }
 
@@ -51,9 +51,9 @@ function BaiduMap(props) {
         onClickMarker(focus)
     }
 
-    let infoMarkers = Object.entries(props.data).map(
-        ([link, entry]) =>
-            <InfoMarker key={entry.record.link} record={entry.record} latLong={entry.latLong} onClickMarker={onClickMarker}/>)
+    let infoMarkers = props.data.map(
+        (entry) =>
+            <InfoMarker key={entry.id} item={entry} onClickMarker={onClickMarker}/>)
 
     return <Map
                 enableScrollWheelZoom={true}
@@ -67,7 +67,7 @@ function BaiduMap(props) {
                 <ScaleControl/>
                 {infoMarkers}
                 <InfoWindow 
-                    item={props.data[focus]} 
+                    item={props.data.find(e => e.id === focus)}
                     shouldAutoCenter={shouldAutoFocus} 
                     onCloseClick={onWindowCloseClick}/>
             </Map>
