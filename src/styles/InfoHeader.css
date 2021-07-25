@@ -28,19 +28,21 @@
 
 .info-item-footer {
   display: flex;
+  align-items: center;
   margin-top: 10px;
   font-size: 14px;
 }
 
 .info-item-link {
-  font-size: 12px;
+  margin-left: 10px;
+  margin-right: 10px;
+  font-size: 13px;
 }
 
 .info-item-date {
-  margin-left: 10px;
   display: inline;
   float: right;
-  font-size: 12px;
+  font-size: 13px;
   color: #666;
 }
 
@@ -49,4 +51,14 @@
   justify-content: space-evenly;
   margin-top: 10px;
   margin-bottom: 10px;
+}
+
+@media screen and (max-width: 400px) {
+  .info-button-list a {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+.info-item-tag-list {
 }
