@@ -12,6 +12,10 @@
 [后台与数据处理](https://github.com/GiveHenanAHand/henan-rescue-viz-data)
 
 
+## 项目数据已同步到飞书文档
+现在需要志愿者协同我们一起对信息标注（筛选有用信息，标记信息类别），如果感兴趣的同学可以向我们发邮件(z1m6r3@gmail.com)，申请编辑权限。
+[文档地址](https://u9u37118bj.feishu.cn/sheets/shtcnh4177SPTo2N8NglZHCirDe)
+
 ## 在本地运行
 `yarn install && yarn start`
 
