@@ -17,9 +17,15 @@
 
 .info-item {
   display: block;
-  padding: 10px;
   text-decoration: none;
-  border-top: gray 1px dotted;
+}
+
+.info-item-content {
+   white-space: pre-wrap;      /* CSS3 */
+   white-space: -moz-pre-wrap; /* Firefox */
+   white-space: -pre-wrap;     /* Opera <7 */
+   white-space: -o-pre-wrap;   /* Opera 7 */
+   word-wrap: break-word;      /* IE */
 }
 
 .info-item:first-child {
@@ -61,4 +67,18 @@
 }
 
 .info-item-tag-list {
+}
+
+.info-list-header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.info-list-header .info-list-search {
+  margin-right: 20px;
+}
+
+.info-list-search-icon {
+  color: red;
 }
