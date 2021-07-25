@@ -34,6 +34,7 @@
 
 .info-item-footer {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   margin-top: 10px;
   font-size: 14px;
@@ -80,5 +81,5 @@
 }
 
 .info-list-search-icon {
-  color: red;
+  /*color: red;*/
 }

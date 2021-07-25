@@ -102,7 +102,7 @@ function InfoHeader(props) {
                 dataSource={dataList}
                 renderItem={item => (
                     <List.Item>
-                        <InfoItem info={item} key={item.link} />
+                        <InfoItem info={item} key={item.id}/>
                     </List.Item>
                 )}
             />
