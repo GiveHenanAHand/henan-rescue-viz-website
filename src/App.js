@@ -6,10 +6,16 @@ function App() {
     const [timeRange, setTimeRange] = useState(6)
     const [data, setData] = useState([])
     const [bounds, setBounds] = useState(null)
+    // map center
+    const [center, setCenter] = useState({ lng: 113.802193, lat: 34.820333 })
 
     // filter relevant states
     const [ keyword, setKeyword ] = useState('')
     const [ selectedType, setSelectedType ] = useState('')
+
+    // highlight relevant states
+    // changeList: (id -> icon) dict
+    const [ changeList, setChangeList ] = useState({})
 
     useEffect(() => {
         console.log("enter page")
@@ -22,8 +28,8 @@ function App() {
                 // including different ways to create the latLong and time fields to make it compatible
                 // across different versions of json format; only for the transition phase
                 item.location = {
-                    lng: (item.location && item.location.lng) || item.lng + Math.random() / 1000,
-                    lat: (item.location && item.location.lat) || item.lat + Math.random() / 1000
+                    lng: ((item.location && item.location.lng) || item.lng) + Math.random() / 1000,
+                    lat: ((item.location && item.location.lat) || item.lat) + Math.random() / 1000
                 }
                 item.time = item.Time || item.time
 
@@ -35,6 +41,9 @@ function App() {
                 item.category = item.category || '未分类'
 
                 item.isWeibo = item.link.startsWith('no_link')
+
+                // default icon
+                item.icon = 'loc_red'
 
                 return item
             })
@@ -79,6 +88,29 @@ function App() {
         setBounds(newBounds)
     }
 
+    function handleInfoSelected(item) {
+        let list = Object.assign({}, changeList)
+
+        // revert last change
+        for (const id in list) {
+            if (id === item.id) continue
+
+            const prevItem = data.find(e => e.id === id)
+            // if prevItem exists and it's highlighted, un-highlight it
+            if (prevItem && list[id] !== prevItem.icon) {
+                list[id] = prevItem.icon
+            } else {
+                // no previous item exists or it's already not highlighted, remove from list
+                delete list[id]
+            }
+        }
+
+        // highlight item
+        list[item.id] = 'loc_blue'
+        setChangeList(list)
+        setCenter(item.location)
+    }
+
     return (
         <div className={"rootDiv"}>
             <InfoHeader
@@ -89,9 +121,12 @@ function App() {
                 notifySliderChange={handleSliderChange}
                 notifyKeywordChange={ e => setKeyword(e) }
                 notifyTypeChange={ e => setSelectedType(e) }
+                handleItemClick={ e => handleInfoSelected(e) }
             />
             <BaiduMap
                 data={filterData}
+                center={center}
+                changeList={changeList}
                 handleBoundChanged={updateBounds}/>
         </div>
     )

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, {useState, useCallback, useMemo} from "react";
 import {Map, ScaleControl, ZoomControl} from 'react-bmapgl';
 import { InfoMarker,InfoWindow,LocationControl } from ".";
 
@@ -51,22 +51,25 @@ function BaiduMap(props) {
         onClickMarker(focus)
     }
 
-    let infoMarkers = props.data.map(
-        (entry) =>
-            <InfoMarker key={entry.id} item={entry} onClickMarker={onClickMarker}/>)
+    const infoMarkers = useMemo(() => {
+        return props.data.map( item => {
+                    // color in props.changeList has a higher priority
+                    return <InfoMarker key={item.id} item={item} icon={props.changeList[item.id] || item.icon} onClickMarker={onClickMarker}/>
+                })
+    }, [props.changeList, props.data])
 
     return <Map
                 enableScrollWheelZoom={true}
                 enableDragging={true}
                 zoom={9}
-                center={{lng: 113.802193, lat: 34.820333}}
+                center={props.center}
                 className="mapDiv"
                 ref={mapRef}
                 style={{height: "100%"}}>
                 <ZoomControl/>
                 <ScaleControl/>
                 <LocationControl/>
-                {infoMarkers}
+                { infoMarkers }
                 <InfoWindow 
                     item={props.data.find(e => e.id === focus)}
                     shouldAutoCenter={shouldAutoFocus} 
