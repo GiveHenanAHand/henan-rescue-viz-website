@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { LEFT_FOLD } from '../icon';
-import InfoList from "./InfoList";
-import { Button, Slider, Row, Col, Select, Tag } from 'antd';
+import { Button, Slider, Row, Col, Select, Tag, List } from 'antd';
+import { LEFT_FOLD } from '../icon'
 import { colorMap } from '../common/constant'
+import InfoItem from "./InfoItem"
 import '../styles/InfoHeader.css'
 const options = Object.keys(colorMap).map(item => ({ label: item, value: colorMap[item] }));
 
@@ -96,7 +96,16 @@ function InfoHeader(props) {
                 options={options}
                 onChange={onSelectCategory}
             />
-            <InfoList list={dataList} />
+            <List
+                className="info-list"
+                itemLayout="horizontal"
+                dataSource={dataList}
+                renderItem={item => (
+                    <List.Item>
+                        <InfoItem info={item} key={item.link} />
+                    </List.Item>
+                )}
+            />
             <div className="left-fold" data-fold={isFold} onClick={onLeftFold}>{LEFT_FOLD}</div>
         </div>
     )
