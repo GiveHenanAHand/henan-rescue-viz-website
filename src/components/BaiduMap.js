@@ -20,7 +20,7 @@ function BaiduMap(props) {
     const mapRef = useCallback(node => {
         if (node !== null && bounds == null) {
             const map = node.map
-            updateBounds('init', map)
+            // updateBounds('init', map)
             map.addEventListener('moveend', () => {
                 updateBounds('moveend', map)
             })
