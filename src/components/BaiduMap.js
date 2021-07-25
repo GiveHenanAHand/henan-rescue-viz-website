@@ -10,7 +10,7 @@ function BaiduMap(props) {
 
     function onClickMarker(link){
         setShouldAutoFocus(true)
-        if (focus == link) {
+        if (focus === link) {
             setFocus("")
         } else {
             setFocus(link)

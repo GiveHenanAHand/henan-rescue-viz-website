@@ -66,6 +66,7 @@
 .info-list-header {
   display: flex;
   justify-content: center;
+  margin-bottom: 10px;
 }
 
 .info-list-header .info-list-search {

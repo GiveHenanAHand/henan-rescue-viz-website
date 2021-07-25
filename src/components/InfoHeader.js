@@ -1,8 +1,10 @@
 import {useCallback, useEffect, useState} from "react";
 import { LEFT_FOLD } from '../icon';
-import InfoList from "./InfoList";
-import { Button, Slider, Row, Col } from 'antd';
+import {Button, Slider, Row, Col, Input, Select, List} from 'antd';
+import {SearchOutlined} from "@ant-design/icons";
+import InfoItem from "./InfoItem";
 import '../styles/InfoHeader.css'
+const { Option } = Select
 
 function InfoHeader(props) {
     const [isFold, setIsFold] = useState(false)
@@ -35,7 +37,7 @@ function InfoHeader(props) {
         return <div className="slider-container">
             <Row justify="center">
                 <Col span={12}>
-                    <Slider defaultValue={8} step={2} min={2} max={12} onAfterChange={handleSliderChange}/>
+                    <Slider defaultValue={8} step={2} min={2} max={24} onAfterChange={handleSliderChange}/>
                 </Col>
                 <Col className="label-col" span={6}>
                     <label>{labelText}</label>
@@ -56,7 +58,30 @@ function InfoHeader(props) {
                     <br />
                     {slider()}
                 </div>
-                <InfoList list={displayList}/>
+            <div className="info-list-header">
+                <Input placeholder="搜索"
+                       className="info-list-search"
+                       value={props.keyword}
+                       onChange={ e => props.notifyKeywordChange(e.target.value) }
+                       allowClear
+                       prefix={<SearchOutlined className="info-list-search-icon"/>}
+                       style={{ width: 200 }}
+                />
+                <Select defaultValue='' style={{width: 120}} onChange={value => props.notifyTypeChange(value)}>
+                    <Option value={''}>全选</Option>
+                    { props.categories.map(category => <Option value={category} key={category}>{category}</Option>) }
+                </Select>
+            </div>
+            <List
+                className="info-list"
+                itemLayout="horizontal"
+                dataSource={displayList}
+                renderItem={item => (
+                    <List.Item>
+                        <InfoItem info={item} key={item.link}/>
+                    </List.Item>
+                )}
+                />
                 <div className="left-fold" data-fold={isFold} onClick={onLeftFold}>{LEFT_FOLD}</div>
             </div>
     )
