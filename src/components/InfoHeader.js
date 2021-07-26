@@ -55,13 +55,13 @@ function InfoHeader(props) {
     }
 
     let headerText = () => {
-        if (dataSource == 'weibo') {
+        if (dataSource === 'weibo') {
             return <label>本网站仅聚合新浪微博上发布的
                 有关2021年7月河南暴雨的求助信息，请大家注意辨别信息真伪。
                 点击标记点可以看到更多信息及原微博地址。</label>
         } else {
             return <label>在线表格信息来源于志愿者们手工整理有关2021年7月河南暴雨的求助信息, 跳转到
-                <a href="https://u9u37118bj.feishu.cn/sheets/shtcnemn0sOgZ5Y9Cvp027wHWYd?from=from_copylink" target="_blank">文档地址</a></label>
+                <a href="https://u9u37118bj.feishu.cn/sheets/shtcnemn0sOgZ5Y9Cvp027wHWYd?from=from_copylink" target="_blank" rel="noreferrer">文档地址</a></label>
         }
     }
 
@@ -73,7 +73,7 @@ function InfoHeader(props) {
     const categories = Object.keys(CATEGORY_MAP)
 
     let slider = () => {
-        if (dataSource == 'sheet') {
+        if (dataSource === 'sheet') {
             return null
         }
 

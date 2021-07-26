@@ -1,5 +1,4 @@
-import { Tag, Row, Col } from "antd"
-import { colorMap } from '../common/constant'
+import { Tag } from "antd"
 
 function InfoItem(props) {
 
@@ -27,6 +26,7 @@ function InfoItem(props) {
         <div className="info-item-content">{post_text}</div>
         <div className="info-item-footer">
             <label className="info-item-date">{post_time}</label>
+            {link_section}
             <div className="info-item-tag-list">
               <Tag color={props.info.color}>{props.info.category}</Tag>
                 { props.info.types.length > 0 ? props.info.types.map(type => <Tag color={props.info.color}>{type}</Tag>) : null }
