@@ -2,7 +2,6 @@ import React, { useState, useCallback, useMemo } from "react";
 import { Map, ScaleControl, ZoomControl, MapTypeControl, MapvglView, MapvglLayer } from 'react-bmapgl';
 import { InfoWindow, LocationControl } from ".";
 
-
 function BaiduMap(props) {
     const [focus, setFocus] = useState("")
     const [bounds, setBounds] = useState(null)
