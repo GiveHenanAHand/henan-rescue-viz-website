@@ -1,5 +1,6 @@
 import React, {useEffect, useState, useMemo} from "react";
 import { BaiduMap, InfoHeader } from "./components";
+import { COLOR_MAP } from './common/constant'
 import './styles/App.css';
 
 function App() {
@@ -33,16 +34,29 @@ function App() {
                     lng: ((item.location && item.location.lng) || item.lng) + Math.random() / 150,
                     lat: ((item.location && item.location.lat) || item.lat) + Math.random() / 150
                 }
+
+                // format time
                 item.time = item.Time || item.time
+                item.timestamp = Date.parse(item.time)
+                const date = new Date(item.timestamp)
+                item.formatTime = `${date.getMonth() + 1}月${date.getDate()}日 ${item.time.substring(11, 20)}`
 
                 // use last part of link as id
-                const arr = item.link.split('/')
+                let arr = item.link.split('/')
                 item.id = arr[arr.length - 1]
 
                 // fill null category
                 item.category = item.category || '未分类'
 
                 item.isWeibo = item.link.startsWith('no_link')
+
+                // item category and types
+                const category = item.category
+                arr = category.split('_').map(e => e.trim())
+                // the first is category
+                item.category = arr.shift()
+                item.types = arr
+                item.color = COLOR_MAP[item.category]
 
                 // default icon
                 item.icon = 'loc_red'
@@ -72,7 +86,8 @@ function App() {
         if (timeRange !== 12 || (keyword && keyword.length > 0) || selectedType.length > 0) {
             const beginTime = Date.now() - timeRange * 60 * 60 * 1000
             currentFilteredData = data.filter(item => {
-                        return (Date.parse(item.time) > beginTime) &&
+                // if timeRange equals 12, return all data
+                        return (item.timestamp > beginTime || timeRange === 12) &&
                             item.post.indexOf(keyword) > -1 &&
                             item.category.indexOf(selectedType) > -1
             })
