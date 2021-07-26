@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useState} from "react";
 import { LEFT_FOLD } from '../icon';
-import {Button, Slider, Row, Col, Input, Select, List} from 'antd';
+import {Button, Slider, Row, Col, Input, Select, List, Radio} from 'antd';
 import {SearchOutlined} from "@ant-design/icons";
 import InfoItem from "./InfoItem";
 import {CATEGORY_MAP} from "../common/constant";
@@ -12,6 +12,7 @@ function InfoHeader(props) {
     const [timeRange, setTimeRange] = useState(8)
     const [displayList, setDisplayList] = useState([])
     const [selectedId, setSelectedId] = useState('')
+    const [dataSource, setDataSource] = useState('weibo')
     const [types, setTypes] = useState([])
 
     useEffect(() => {
@@ -37,6 +38,33 @@ function InfoHeader(props) {
         props.handleItemClick(item)
     }
 
+    let handleSouceSwitched = (event) => {
+        setDataSource(event.target.value)
+        props.notifyDataSourceSwitch(event.target.value)
+    }
+
+    let souceSwitch = () => {
+        return <Row className="source-switch" justify="center">
+            <Col style={{ marginTop: 5 }}>信息来源：</Col>
+            <Col>
+                <Radio.Group defaultValue="weibo" buttonStyle="solid" onChange={handleSouceSwitched}>
+                <Radio.Button value="weibo">微博</Radio.Button>
+                <Radio.Button value="sheet">在线表格</Radio.Button>
+            </Radio.Group></Col>
+        </Row>
+    }
+
+    let headerText = () => {
+        if (dataSource === 'weibo') {
+            return <label>本网站仅聚合新浪微博上发布的
+                有关2021年7月河南暴雨的求助信息，请大家注意辨别信息真伪。
+                点击标记点可以看到更多信息及原微博地址。</label>
+        } else {
+            return <label>在线表格信息来源于志愿者们手工整理有关2021年7月河南暴雨的求助信息, 跳转到
+                <a href="https://u9u37118bj.feishu.cn/sheets/shtcnemn0sOgZ5Y9Cvp027wHWYd?from=from_copylink" target="_blank" rel="noreferrer">文档地址</a></label>
+        }
+    }
+
     const handleCategoryChange = (value) => {
         setTypes(CATEGORY_MAP[value] || [])
         props.notifyCategoryChange(value)
@@ -45,12 +73,16 @@ function InfoHeader(props) {
     const categories = Object.keys(CATEGORY_MAP)
 
     let slider = () => {
+        if (dataSource === 'sheet') {
+            return null
+        }
+
         let labelText = "最近" + timeRange + "小时";
         if (timeRange === 12) {
             labelText = "全部记录"
         }
         return <div className="slider-container">
-            <Row justify="center">
+            <Row justify="center" align="middle">
                 <Col span={12}>
                     <Slider defaultValue={8} step={2} min={2} max={12} onAfterChange={handleSliderChange}/>
                 </Col>
@@ -69,7 +101,8 @@ function InfoHeader(props) {
     return (
             <div className="info-container" data-fold={isFold}>
                 <div className="info" data-fold={isFold}>
-                    <div>本网站仅聚合新浪微博上发布的有关2021年7月河南暴雨的求助信息，请大家注意辨别信息真伪。点击标记点可以看到更多信息及原微博地址。</div>
+                    {souceSwitch()}
+                    <div>{headerText()}</div>
                     <br />
                     {slider()}
                 </div>

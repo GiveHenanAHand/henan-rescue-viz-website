@@ -1,6 +1,7 @@
-.slider-container {
-
+.source-switch {
+  margin-bottom: 5px;
 }
+
 .label-col {
     margin-left: 10px;
     display: flex !important;
@@ -99,6 +100,10 @@
 .info-list-header .info-list-types {
   margin-top: 10px;
   min-width: 80px;
+}
+
+.info-list-header .info-list-types .ant-select-selection-search {
+  color: transparent;
 }
 
 .info-list-search-icon {
