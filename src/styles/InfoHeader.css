@@ -1,6 +1,7 @@
-.slider-container {
-
+.source-switch {
+  margin-bottom: 5px;
 }
+
 .label-col {
     margin-left: 10px;
     display: flex !important;
