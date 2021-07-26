@@ -3,6 +3,7 @@ import { LEFT_FOLD } from '../icon';
 import {Button, Slider, Row, Col, Input, Select, List, Radio} from 'antd';
 import {SearchOutlined} from "@ant-design/icons";
 import InfoItem from "./InfoItem";
+import {CATEGORY_MAP} from "../common/constant";
 import '../styles/InfoHeader.css'
 const { Option } = Select
 
@@ -12,6 +13,7 @@ function InfoHeader(props) {
     const [displayList, setDisplayList] = useState([])
     const [selectedId, setSelectedId] = useState('')
     const [dataSource, setDataSource] = useState('weibo')
+    const [types, setTypes] = useState([])
 
     useEffect(() => {
         if (props.bounds == null) return
@@ -26,12 +28,12 @@ function InfoHeader(props) {
     }, [isFold])
     
 
-    let handleSliderChange = (value) => {
+    const handleSliderChange = (value) => {
         setTimeRange(value)
         props.notifySliderChange(value)
     }
 
-    let handleItemClicked = (item) => {
+    const handleItemClicked = (item) => {
         setSelectedId(item.id)
         props.handleItemClick(item)
     }
@@ -63,6 +65,13 @@ function InfoHeader(props) {
         }
     }
 
+    const handleCategoryChange = (value) => {
+        setTypes(CATEGORY_MAP[value] || [])
+        props.notifyCategoryChange(value)
+    }
+
+    const categories = Object.keys(CATEGORY_MAP)
+
     let slider = () => {
         if (dataSource == 'sheet') {
             return null
@@ -84,7 +93,7 @@ function InfoHeader(props) {
             <div className="info-button-list">
                 <Button type="primary" href="https://u9u37118bj.feishu.cn/docs/doccn3QzzbeQLPQwNSb4Hcl2X1g" target="_blank">关于我们</Button>
                 <Button type="primary" href="https://u9u37118bj.feishu.cn/sheets/shtcnh4177SPTo2N8NglZHCirDe" target="_blank">实时数据表格</Button>
-                <Button type="primary" href="https://www.wjx.cn/vj/PfjWt3C.aspx" target="_blank">需求反馈</Button>
+                <Button type="primary" href="https://www.wjx.cn/vj/PZb53C6.aspx" target="_blank">需求反馈</Button>
             </div>
         </div>
     }
@@ -104,11 +113,23 @@ function InfoHeader(props) {
                        onChange={ e => props.notifyKeywordChange(e.target.value) }
                        allowClear
                        prefix={<SearchOutlined className="info-list-search-icon"/>}
-                       style={{ width: 200 }}
+                       style={{ }}
                 />
-                <Select defaultValue='' style={{width: 120}} onChange={value => props.notifyTypeChange(value)}>
+                <Select defaultValue='' className="info-list-category" style={{}} onChange={handleCategoryChange}>
                     <Option value={''}>全选</Option>
-                    { props.categories.map(category => <Option value={category} key={category}>{category}</Option>) }
+                    { categories.map(category => <Option value={category} key={category}>{category}</Option>) }
+                </Select>
+                <Select mode="multiple"
+                        className="info-list-types"
+                        value={props.selectedTypes}
+                        defaultValue={[]}
+                        allowClear
+                        style={{ }}
+                        disabled={types.length === 0}
+                        onChange={value => props.notifyTypesChange(value)}>
+                    {types.map(type => (
+                      <Option key={type}>{type}</Option>
+                    ))}
                 </Select>
             </div>
             <List

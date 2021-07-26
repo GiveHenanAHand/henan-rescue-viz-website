@@ -14,7 +14,8 @@ function App() {
 
     // filter relevant states
     const [ keyword, setKeyword ] = useState('')
-    const [ selectedType, setSelectedType ] = useState('')
+    const [ selectedCategory, setSelectedCategory ] = useState('')
+    const [ selectedTypes, setSelectedTypes ] = useState([])
 
     // highlight relevant states
     // changeList: (id -> icon) dict
@@ -81,32 +82,48 @@ function App() {
         xhr_sheet.send()
     })
 
-    const categories = useMemo(() => {
-        if (!(dataSource in data)) return []
-        const categories = new Set(data[dataSource].map(e => e.category ).filter(e => e && e.length > 0))
-        console.log(categories)
-        return [...categories].sort().reverse()
-    }, [data, dataSource])
-
     // [SECTION] Data generation
     let filterData = useMemo(() => {
         if (!(dataSource in data)) return []
         let currentFilteredData
+        // convert selectedTypes into map, with (item -> true)
+        const selectedTypesMap = selectedTypes.reduce((result, item) => {
+            result[item] = true
+            return result
+        }, {})
+
         if (dataSource === 'weibo') {
             const beginTime = Date.now() - timeRange * 60 * 60 * 1000
             currentFilteredData = data[dataSource].filter(item => {
-                return (item.timestamp > beginTime) &&
-                    item.post.indexOf(keyword) > -1 &&
-                    item.category.indexOf(selectedType) > -1})
+                const result = (item.timestamp > beginTime) &&
+                            item.post.indexOf(keyword) > -1 &&
+                            item.category.indexOf(selectedCategory) > -1
+                // if already false
+                if (result === false) { return false }
+                // default select all
+                if (selectedTypes.length === 0) return true
+                // if previous condition is true, check selected types
+                for (const type of item.types) {
+                    if (selectedTypesMap[type]) { return true }
+                }
+                return false
+            })
         } else {
+            // filter for manual sheet source
             currentFilteredData = data[dataSource].filter(item => {
                 let contains_keyword = ((item.address.indexOf(keyword) > -1) ||
                     (item.post && item.post.indexOf(keyword) > -1))
-                return contains_keyword && item.category.indexOf(selectedType) > -1
+                const result = contains_keyword && item.category.indexOf(selectedCategory) > -1
+                if (!result) { return false }
+                if (selectedTypes.length === 0) return true
+                for (const type of item.types) {
+                    if (selectedTypesMap[type]) { return true }
+                }
+                return false
             })
         }
         return currentFilteredData
-    }, [data, dataSource, timeRange, keyword, selectedType])
+    }, [data, dataSource, timeRange, keyword, selectedCategory, selectedTypes])
 
     // [SECTION] component call backs
     function handleDataSourceSwitch(value) {
@@ -155,12 +172,13 @@ function App() {
                 list={filterData}
                 bounds={bounds}
                 keyword={keyword}
-                categories={categories}
+                selectedTypes={selectedTypes}
                 defaultText={listDefaultText}
                 notifySliderChange={handleSliderChange}
                 notifyDataSourceSwitch={handleDataSourceSwitch}
                 notifyKeywordChange={ e => setKeyword(e) }
-                notifyTypeChange={ e => setSelectedType(e) }
+                notifyCategoryChange={ e => { setSelectedCategory(e); setSelectedTypes([]) } }
+                notifyTypesChange={ e => setSelectedTypes(e) }
                 handleItemClick={ e => handleInfoSelected(e) }
             />
             <BaiduMap
