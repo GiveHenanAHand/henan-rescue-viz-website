@@ -24,12 +24,22 @@ function App() {
     function createDataItem(item) {
         // including different ways to create the latLong and time fields to make it compatible
         // across different versions of json format; only for the transition phase
+        item.isWeibo = !item.link.startsWith('no_link')
+        // generate random to prevent overlap
+        let random1 = Math.random()-0.5
+        let random2 = Math.random()-0.5
+        if (!item.isWeibo) {
+            random1 = random1 / 200
+            random2 = random2 / 200
+        } else {
+            random1 = random1 / 1000
+            random2 = random2 / 1000
+        }
         item.location = {
-            lng: ((item.location && item.location.lng) || item.lng) + Math.random() / 150,
-            lat: ((item.location && item.location.lat) || item.lat) + Math.random() / 150
+            lng: ((item.location && item.location.lng) || item.lng) + random1,
+            lat: ((item.location && item.location.lat) || item.lat) + random2
         }
 
-        item.isWeibo = !item.link.startsWith('no_link')
         item.time = item.Time || item.time
         if (item.isWeibo) {
             // format time
