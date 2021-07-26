@@ -86,8 +86,7 @@ function App() {
                 return result
             }, {})
             currentFilteredData = data.filter(item => {
-                // if timeRange equals 12, return all data
-                let result = (item.timestamp > beginTime || timeRange === 12) &&
+                const result = (item.timestamp > beginTime) &&
                             item.post.indexOf(keyword) > -1 &&
                             item.category.indexOf(selectedCategory) > -1
                 // if already false
@@ -108,7 +107,10 @@ function App() {
                 return false
             })
         } else {
-            currentFilteredData = data
+            // only return data within 12 hours
+            const beginTime = Date.now() - 12 * 60 * 60 * 1000
+
+            currentFilteredData = data.filter( item => item.timestamp > beginTime )
         }
 
         return currentFilteredData
