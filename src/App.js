@@ -13,7 +13,8 @@ function App() {
 
     // filter relevant states
     const [ keyword, setKeyword ] = useState('')
-    const [ selectedType, setSelectedType ] = useState('')
+    const [ selectedCategory, setSelectedCategory ] = useState('')
+    const [ selectedTypes, setSelectedTypes ] = useState([])
 
     // highlight relevant states
     // changeList: (id -> icon) dict
@@ -70,33 +71,48 @@ function App() {
         xhr.send()
     })
 
-    const categories = useMemo(() => {
-        console.log("update categories")
-        const categories = new Set(data.map(e => e.category ).filter(e => e && e.length > 0))
-
-        console.log(categories)
-        return [...categories].sort().reverse()
-    }, [data])
 
     // [SECTION] Data generation
     let filterData = useMemo(() => {
         let currentFilteredData
         console.log("update filter!")
 
-        if (timeRange !== 12 || (keyword && keyword.length > 0) || selectedType.length > 0) {
+        if (timeRange !== 12 || (keyword && keyword.length > 0) || selectedCategory.length > 0 || selectedTypes.length > 0) {
             const beginTime = Date.now() - timeRange * 60 * 60 * 1000
+
+            // convert selectedTypes into map, with (item -> true)
+            const selectedTypesMap = selectedTypes.reduce((result, item) => {
+                result[item] = true
+                return result
+            }, {})
             currentFilteredData = data.filter(item => {
                 // if timeRange equals 12, return all data
-                        return (item.timestamp > beginTime || timeRange === 12) &&
+                let result = (item.timestamp > beginTime || timeRange === 12) &&
                             item.post.indexOf(keyword) > -1 &&
-                            item.category.indexOf(selectedType) > -1
+                            item.category.indexOf(selectedCategory) > -1
+                // if already false
+                if (result === false) {
+                    return false
+                }
+
+                // default select all
+                if (selectedTypes.length === 0) return true
+
+
+                // if previous condition is true, check selected types
+                for (const type of item.types) {
+                    if (selectedTypesMap[type]) {
+                        return true
+                    }
+                }
+                return false
             })
         } else {
             currentFilteredData = data
         }
 
         return currentFilteredData
-    }, [data, timeRange, keyword, selectedType])
+    }, [data, timeRange, keyword, selectedCategory, selectedTypes])
 
     // [SECTION] component call backs
     function handleSliderChange(e) {
@@ -141,11 +157,12 @@ function App() {
                 list={filterData}
                 bounds={bounds}
                 keyword={keyword}
-                categories={categories}
+                selectedTypes={selectedTypes}
                 defaultText={listDefaultText}
                 notifySliderChange={handleSliderChange}
                 notifyKeywordChange={ e => setKeyword(e) }
-                notifyTypeChange={ e => setSelectedType(e) }
+                notifyCategoryChange={ e => { setSelectedCategory(e); setSelectedTypes([]) } }
+                notifyTypesChange={ e => setSelectedTypes(e) }
                 handleItemClick={ e => handleInfoSelected(e) }
             />
             <BaiduMap

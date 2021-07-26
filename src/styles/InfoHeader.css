@@ -82,11 +82,23 @@
 .info-list-header {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   margin-bottom: 10px;
 }
 
 .info-list-header .info-list-search {
-  margin-right: 20px;
+  flex-basis: 100%;
+  margin: 0 25px;
+}
+
+.info-list-header .info-list-category {
+  margin-top: 10px;
+  margin-right: 5px;
+}
+
+.info-list-header .info-list-types {
+  margin-top: 10px;
+  min-width: 80px;
 }
 
 .info-list-search-icon {
