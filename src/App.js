@@ -21,61 +21,59 @@ function App() {
     // changeList: (id -> icon) dict
     const [changeList, setChangeList] = useState({})
 
-    // Fetch data on init
-    useEffect(() => {
-        console.log("enter page")
-        let xhr = new XMLHttpRequest();
-        xhr.onload = function () {
-            if (Object.keys(data).length !== 0) return
+    function createDataItem(item) {
+        // including different ways to create the latLong and time fields to make it compatible
+        // across different versions of json format; only for the transition phase
+        item.isWeibo = !item.link.startsWith('no_link')
+        // generate random to prevent overlap
+        let random1 = Math.random() - 0.5
+        let random2 = Math.random() - 0.5
+        if (!item.isWeibo) {
+            random1 = random1 / 200
+            random2 = random2 / 200
+        } else {
+            random1 = random1 / 1000
+            random2 = random2 / 1000
+        }
+        item.location = {
+            lng: ((item.location && item.location.lng) || item.lng) + random1,
+            lat: ((item.location && item.location.lat) || item.lat) + random2
+        }
 
-            const serverData = JSON.parse(xhr.responseText)
-            const items = serverData.map(item => {
-                // including different ways to create the latLong and time fields to make it compatible
-                // across different versions of json format; only for the transition phase
-                item.location = {
-                    lng: ((item.location && item.location.lng) || item.lng) + Math.random() / 150,
-                    lat: ((item.location && item.location.lat) || item.lat) + Math.random() / 150
-                }
+        item.time = item.Time || item.time
+        if (item.isWeibo) {
+            // format time
+            item.timestamp = Date.parse(item.time)
+            const date = new Date(item.timestamp)
+            item.formatTime = `${date.getMonth() + 1}月${date.getDate()}日 ${item.time.substring(11, 20)}`
+        }
 
-                // format time
-                item.time = item.Time || item.time
-                item.timestamp = Date.parse(item.time)
-                const date = new Date(item.timestamp)
-                item.formatTime = `${date.getMonth() + 1}月${date.getDate()}日 ${item.time.substring(11, 20)}`
+        // use last part of link as id
+        let arr = item.link.split('/')
+        item.id = arr[arr.length - 1]
 
-                // use last part of link as id
-                let arr = item.link.split('/')
-                item.id = arr[arr.length - 1]
+        // fill null category
+        item.category = item.category || '未分类'
 
-                // fill null category
-                item.category = item.category || '未分类'
+        // item category and types
+        const category = item.category
+        arr = category.split('_').map(e => e.trim())
+        // the first is category
+        item.category = arr.shift()
+        item.types = arr
+        item.color = COLOR_MAP[item.category]
 
-                item.isWeibo = item.link.startsWith('no_link')
+        // default icon
+        item.icon = 'loc_red'
 
-                // item category and types
-                const category = item.category
-                arr = category.split('_').map(e => e.trim())
-                // the first is category
-                item.category = arr.shift()
-                item.types = arr
-                item.color = COLOR_MAP[item.category]
-
-                // default icon
-                item.icon = 'loc_red'
-
-                return {
-                    geometry: {
-                        type: 'Point',
-                        coordinates: [item.location.lng, item.location.lat],
-                    },
-                    properties: item,
-                }
-            })
-            setData(items)
-        };
-        xhr.open("GET", "https://api-henan.tianshili.me/parse_json.json");
-        xhr.send()
-    }, []) // 带上中括号,避免重复请求
+        return {
+            geometry: {
+                type: 'Point',
+                coordinates: [item.location.lng, item.location.lat],
+            },
+            properties: item,
+        }
+    }
 
     // Fetch data on init
     useEffect(() => {
@@ -84,7 +82,7 @@ function App() {
             if ('weibo' in data) return
             const serverData = JSON.parse(xhr_weibo.responseText)
             const items = serverData.map(createDataItem)
-            setData(previousData => ({...previousData, weibo: items}))
+            setData(previousData => ({ ...previousData, weibo: items }))
         };
         xhr_weibo.open("GET", "https://api-henan.tianshili.me/parse_json.json");
         xhr_weibo.send()
@@ -94,7 +92,7 @@ function App() {
             if ('sheet' in data) return
             const serverData = JSON.parse(xhr_sheet.responseText)
             const items = serverData.map(createDataItem)
-            setData(previousData => ({...previousData, sheet: items}))
+            setData(previousData => ({ ...previousData, sheet: items }))
         };
         xhr_sheet.open("GET", "https://api-henan.tianshili.me/manual.json ");
         xhr_sheet.send()
@@ -114,8 +112,8 @@ function App() {
             const beginTime = Date.now() - timeRange * 60 * 60 * 1000
             currentFilteredData = data[dataSource].filter(item => {
                 const result = (item.timestamp > beginTime) &&
-                            item.post.indexOf(keyword) > -1 &&
-                            item.category.indexOf(selectedCategory) > -1
+                    item.post.indexOf(keyword) > -1 &&
+                    item.category.indexOf(selectedCategory) > -1
                 // if already false
                 if (result === false) { return false }
                 // default select all
@@ -194,19 +192,17 @@ function App() {
                 defaultText={listDefaultText}
                 notifySliderChange={handleSliderChange}
                 notifyDataSourceSwitch={handleDataSourceSwitch}
-                notifyKeywordChange={ e => setKeyword(e) }
-                notifyCategoryChange={ e => { setSelectedCategory(e); setSelectedTypes([]) } }
-                notifyTypesChange={ e => setSelectedTypes(e) }
-                handleItemClick={ e => handleInfoSelected(e) }
+                notifyKeywordChange={e => setKeyword(e)}
+                notifyCategoryChange={e => { setSelectedCategory(e); setSelectedTypes([]) }}
+                notifyTypesChange={e => setSelectedTypes(e)}
+                handleItemClick={e => handleInfoSelected(e)}
             />
             <BaiduMap
                 data={filterData}
                 center={center}
                 changeList={changeList}
                 mapInited={handleMapInited}
-                handleBoundChanged={updateBounds}/>
+                handleBoundChanged={updateBounds} />
         </div>
     )
 }
-
-export default App;

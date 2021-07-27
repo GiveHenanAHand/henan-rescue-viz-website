@@ -1,11 +1,11 @@
-import {useCallback, useEffect, useState} from "react";
+import { useCallback, useEffect, useState } from "react";
 import { LEFT_FOLD } from '../icon';
-import {Button, Slider, Row, Col, Input, Select, List, Radio} from 'antd';
-import {SearchOutlined} from "@ant-design/icons";
+import { Button, Slider, Row, Col, Input, Select, List, Radio } from 'antd';
+import { SearchOutlined } from "@ant-design/icons";
 import InfoItem from "./InfoItem";
-import {CATEGORY_MAP} from "../common/constant";
+import { CATEGORY_MAP } from "../common/constant";
 import '../styles/InfoHeader.css'
-const options = Object.keys(colorMap).map(item => ({ label: item, value: colorMap[item] }));
+const { Option } = Select
 
 function InfoHeader(props) {
     const [isFold, setIsFold] = useState(false)
@@ -27,6 +27,7 @@ function InfoHeader(props) {
         setIsFold(!isFold);
     }, [isFold])
 
+
     const handleSliderChange = (value) => {
         setTimeRange(value)
         props.notifySliderChange(value)
@@ -47,9 +48,9 @@ function InfoHeader(props) {
             <Col style={{ marginTop: 5 }}>信息来源：</Col>
             <Col>
                 <Radio.Group defaultValue="weibo" buttonStyle="solid" onChange={handleSouceSwitched}>
-                <Radio.Button value="weibo">微博</Radio.Button>
-                <Radio.Button value="sheet">在线表格</Radio.Button>
-            </Radio.Group></Col>
+                    <Radio.Button value="weibo">微博</Radio.Button>
+                    <Radio.Button value="sheet">在线表格</Radio.Button>
+                </Radio.Group></Col>
         </Row>
     }
 
@@ -98,86 +99,48 @@ function InfoHeader(props) {
         </div>
     }
 
-    const tagRender = (props) => {
-        const { label, value, closable, onClose } = props;
-        const onPreventMouseDown = event => {
-            event.preventDefault();
-            event.stopPropagation();
-        };
-        return (
-            <Tag
-                key={label}
-                color={value}
-                onMouseDown={onPreventMouseDown}
-                closable={closable}
-                onClose={onClose}
-                style={{ marginRight: 3 }}
-            >
-                {label}
-            </Tag>
-        );
-    }
-
-    const onSelectCategory = (value, options) => {
-        const cat = []
-        options.forEach(item => {
-            cat.push(item.label)
-        })
-        setCategory(cat)
-    }
-
-    const dataList = category.length > 0 ? displayList.filter((item) => category.indexOf(item.category.split('_')[0]) !== -1) : displayList
     return (
-            <div className="info-container" data-fold={isFold}>
-                <div className="info" data-fold={isFold}>
-                    {souceSwitch()}
-                    <div>{headerText()}</div>
-                    <br />
-                    {slider()}
-                </div>
+        <div className="info-container" data-fold={isFold}>
+            <div className="info" data-fold={isFold}>
+                {souceSwitch()}
+                <div>{headerText()}</div>
+                <br />
+                {slider()}
+            </div>
             <div className="info-list-header">
                 <Input placeholder="搜索"
-                       className="info-list-search"
-                       value={props.keyword}
-                       onChange={ e => props.notifyKeywordChange(e.target.value) }
-                       allowClear
-                       prefix={<SearchOutlined className="info-list-search-icon"/>}
-                       style={{ }}
+                    className="info-list-search"
+                    value={props.keyword}
+                    onChange={e => props.notifyKeywordChange(e.target.value)}
+                    allowClear
+                    prefix={<SearchOutlined className="info-list-search-icon" />}
+                    style={{}}
                 />
                 <Select defaultValue='' className="info-list-category" style={{}} onChange={handleCategoryChange}>
                     <Option value={''}>全选</Option>
-                    { categories.map(category => <Option value={category} key={category}>{category}</Option>) }
+                    {categories.map(category => <Option value={category} key={category}>{category}</Option>)}
                 </Select>
                 <Select mode="multiple"
-                        className="info-list-types"
-                        value={props.selectedTypes}
-                        defaultValue={[]}
-                        allowClear
-                        style={{ }}
-                        disabled={types.length === 0}
-                        onChange={value => props.notifyTypesChange(value)}>
+                    className="info-list-types"
+                    value={props.selectedTypes}
+                    defaultValue={[]}
+                    allowClear
+                    style={{}}
+                    disabled={types.length === 0}
+                    onChange={value => props.notifyTypesChange(value)}>
                     {types.map(type => (
-                      <Option key={type}>{type}</Option>
+                        <Option key={type}>{type}</Option>
                     ))}
                 </Select>
             </div>
-            <Select
-                mode="multiple"
-                showArrow
-                tagRender={tagRender}
-                // defaultValue={Object.keys(colorMap)}
-                style={{ width: '100%' }}
-                options={options}
-                onChange={onSelectCategory}
-            />
             <List
                 className="info-list"
                 itemLayout="horizontal"
                 bordered
                 dataSource={displayList}
-                locale={ { emptyText: props.defaultText } }
+                locale={{ emptyText: props.defaultText }}
                 renderItem={item => (
-                    <List.Item key={item.id} className={item.id === selectedId ? "selected-item" : ''} onClick={ () => { handleItemClicked(item) } }>
+                    <List.Item key={item.id} className={item.id === selectedId ? "selected-item" : ''} onClick={() => { handleItemClicked(item) }}>
                         <InfoItem info={item} />
                     </List.Item>
                 )}
