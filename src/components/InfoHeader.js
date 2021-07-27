@@ -124,6 +124,7 @@ function InfoHeader(props) {
                         className="info-list-types"
                         value={props.selectedTypes}
                         defaultValue={[]}
+                        showSearch={false}
                         allowClear
                         style={{ }}
                         disabled={types.length === 0}
