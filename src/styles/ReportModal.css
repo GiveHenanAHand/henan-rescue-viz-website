@@ -1,0 +1,23 @@
+.report-modal {
+
+}
+
+.report-modal .ant-divider {
+  margin: 5px 0 15px;
+}
+
+.report-modal .info-list-category {
+  min-width: 80px;
+}
+
+.report-modal .info-list-types {
+  min-width: 120px;
+}
+
+.report-modal .info-item-tag-list {
+  margin: 10px;
+}
+
+.report-modal .new-tag {
+  margin-right: 5px;
+}

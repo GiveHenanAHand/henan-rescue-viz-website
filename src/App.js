@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { BaiduMap, InfoHeader } from "./components";
 import { COLOR_MAP } from './common/constant'
 import './styles/App.css';
+import ReportModal from "./components/ReportModal";
 
 function App() {
     const [timeRange, setTimeRange] = useState(6)
@@ -20,6 +21,9 @@ function App() {
     // highlight relevant states
     // changeList: (id -> icon) dict
     const [changeList, setChangeList] = useState({})
+
+    // modal relevant states
+    const [ modalState, setModalState ] = useState({ modalVisible: false, item: null })
 
     function createDataItem(item) {
         // including different ways to create the latLong and time fields to make it compatible
@@ -46,6 +50,17 @@ function App() {
             item.timestamp = Date.parse(item.time)
             const date = new Date(item.timestamp)
             item.formatTime = `${date.getMonth() + 1}月${date.getDate()}日 ${item.time.substring(11, 20)}`
+        } else {
+            item.formatTime = ''
+        }
+
+        if (!item.isWeibo) {
+            let text = '地址: ' + item.address + '\n'
+            if (item.post) text += '内容: ' + item.post + '\n'
+            if (item.contact_person) text += '联系人: ' + item.contact_person + '\n'
+            if (item.contact_info) text += '联系方式: ' + item.contact_info
+
+            item.post = text
         }
 
         // use last part of link as id
@@ -53,7 +68,8 @@ function App() {
         item.id = arr[arr.length - 1]
 
         // fill null category
-        item.category = item.category || '未分类'
+        // revised_category has a higher priority
+        item.category = item.revised_category || item.category || '未分类'
 
         // item category and types
         const category = item.category
@@ -94,7 +110,7 @@ function App() {
             const items = serverData.map(createDataItem)
             setData(previousData => ({ ...previousData, sheet: items }))
         };
-        xhr_sheet.open("GET", "https://api-henan.tianshili.me/manual.json ");
+        xhr_sheet.open("GET", "https://api-henan.tianshili.me/manual.json");
         xhr_sheet.send()
     })
 
@@ -182,6 +198,26 @@ function App() {
         setCenter(item.location)
     }
 
+    function handleCorrection(item) {
+        setModalState({ visible: true, item: item })
+    }
+
+    function handleModalVisible(isVisible, item, newCategory) {
+        // if successfully updated
+        if (isVisible === false && item) {
+            let items = [...data.weibo]
+            let index = items.findIndex(e => e.id === item.id)
+            if (index > -1) {
+                let newItem = {...items[index]}
+                newItem.category = newCategory
+                items[index] = createDataItem(newItem)
+                setData(previousData => ({...previousData, weibo: items}))
+            }
+        }
+
+        setModalState({ visible: isVisible, item: item })
+    }
+
     return (
         <div className={"rootDiv"}>
             <InfoHeader
@@ -192,17 +228,23 @@ function App() {
                 defaultText={listDefaultText}
                 notifySliderChange={handleSliderChange}
                 notifyDataSourceSwitch={handleDataSourceSwitch}
-                notifyKeywordChange={e => setKeyword(e)}
-                notifyCategoryChange={e => { setSelectedCategory(e); setSelectedTypes([]) }}
-                notifyTypesChange={e => setSelectedTypes(e)}
-                handleItemClick={e => handleInfoSelected(e)}
+                notifyKeywordChange={ e => setKeyword(e) }
+                notifyCategoryChange={ e => { setSelectedCategory(e); setSelectedTypes([]) } }
+                notifyTypesChange={ e => setSelectedTypes(e) }
+                handleItemClick={ e => handleInfoSelected(e) }
+                handleCorrection={ e => handleCorrection(e) }
             />
             <BaiduMap
                 data={filterData}
                 center={center}
                 changeList={changeList}
                 mapInited={handleMapInited}
-                handleBoundChanged={updateBounds} />
+                handleCorrection={handleCorrection}
+                handleBoundChanged={updateBounds}/>
+            { modalState.visible && modalState.item ?
+                <ReportModal item={modalState.item}
+                         visible={modalState.visible}
+                         setVisible={handleModalVisible}/> :null }
         </div>
     )
 }

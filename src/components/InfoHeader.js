@@ -121,13 +121,14 @@ function InfoHeader(props) {
                     {categories.map(category => <Option value={category} key={category}>{category}</Option>)}
                 </Select>
                 <Select mode="multiple"
-                    className="info-list-types"
-                    value={props.selectedTypes}
-                    defaultValue={[]}
-                    allowClear
-                    style={{}}
-                    disabled={types.length === 0}
-                    onChange={value => props.notifyTypesChange(value)}>
+                        className="info-list-types"
+                        value={props.selectedTypes}
+                        defaultValue={[]}
+                        showSearch={false}
+                        allowClear
+                        style={{ }}
+                        disabled={types.length === 0}
+                        onChange={value => props.notifyTypesChange(value)}>
                     {types.map(type => (
                         <Option key={type}>{type}</Option>
                     ))}
@@ -140,8 +141,8 @@ function InfoHeader(props) {
                 dataSource={displayList}
                 locale={{ emptyText: props.defaultText }}
                 renderItem={item => (
-                    <List.Item key={item.id} className={item.id === selectedId ? "selected-item" : ''} onClick={() => { handleItemClicked(item) }}>
-                        <InfoItem info={item} />
+                    <List.Item key={item.id} className={item.id === selectedId ? "selected-item" : ''} onClick={ () => { handleItemClicked(item) } }>
+                        <InfoItem info={item} handleCorrection={props.handleCorrection}/>
                     </List.Item>
                 )}
             />

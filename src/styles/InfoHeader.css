@@ -25,7 +25,7 @@
   border-color: #00000008;
 }
 
-.info-item {
+.info-list .info-item {
   display: block;
   text-decoration: none;
   cursor: pointer;
@@ -52,8 +52,12 @@
 
 .info-item-link {
   margin-left: 10px;
-  margin-right: 10px;
+  /*margin-right: 5px;*/
   font-size: 13px;
+}
+
+.ant-btn-link.info-item-link {
+  padding: 0 !important;
 }
 
 .info-item-date {
@@ -78,6 +82,11 @@
 }
 
 .info-item-tag-list {
+  margin-left: 10px;
+}
+
+.info-sheet-item .info-item-tag-list {
+  margin-left: 0;
 }
 
 .info-list-header {
@@ -103,7 +112,6 @@
 }
 
 .info-list-header .info-list-types .ant-select-selection-search {
-  color: transparent;
 }
 
 .info-list-search-icon {
