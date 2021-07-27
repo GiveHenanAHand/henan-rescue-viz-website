@@ -50,6 +50,17 @@ function App() {
             item.timestamp = Date.parse(item.time)
             const date = new Date(item.timestamp)
             item.formatTime = `${date.getMonth() + 1}月${date.getDate()}日 ${item.time.substring(11, 20)}`
+        } else {
+            item.formatTime = ''
+        }
+
+        if (!item.isWeibo) {
+            let text = '地址: ' + item.address + '\n'
+            if (item.post) text += '内容: ' + item.post + '\n'
+            if (item.contact_person) text += '联系人: ' + item.contact_person + '\n'
+            if (item.contact_info) text += '联系方式: ' + item.contact_info
+
+            item.post = text
         }
 
         // use last part of link as id
@@ -93,7 +104,7 @@ function App() {
             const items = serverData.map(createDataItem)
             setData(previousData => ({...previousData, sheet: items}))
         };
-        xhr_sheet.open("GET", "https://api-henan.tianshili.me/manual.json ");
+        xhr_sheet.open("GET", "https://api-henan.tianshili.me/manual.json");
         xhr_sheet.send()
     })
 

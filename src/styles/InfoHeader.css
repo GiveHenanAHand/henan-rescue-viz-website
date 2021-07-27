@@ -56,6 +56,10 @@
   font-size: 13px;
 }
 
+.ant-btn-link.info-item-link {
+  padding: 0 !important;
+}
+
 .info-item-date {
   display: inline;
   float: right;
@@ -79,6 +83,10 @@
 
 .info-item-tag-list {
   margin-left: 10px;
+}
+
+.info-sheet-item .info-item-tag-list {
+  margin-left: 0;
 }
 
 .info-list-header {
