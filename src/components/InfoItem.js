@@ -16,10 +16,20 @@ function InfoItem(props) {
         }
     }
 
+    const handleCorrection = () => {
+        if (props.handleCorrection) {
+            props.handleCorrection(props.info)
+        }
+    }
+
     let post_time = (props.info.isWeibo ? props.info.formatTime : props.info.time)
     let link_section = null
+    const showCorrection = typeof (props.hideCorrection) === 'undefined' || props.hideCorrection === false
     if (props.info.isWeibo) {
-        link_section = <a className="info-item-link" href={props.info.link} target="_blank" rel="noopener noreferrer">原微博</a>
+        link_section = <>
+                            <a className="info-item-link" href={props.info.link} target="_blank" rel="noopener noreferrer">原微博</a>
+            { showCorrection ? <a className="info-item-link" onClick={handleCorrection}>纠错</a> : null }
+        </>
     }
 
     return <div className="info-item">
