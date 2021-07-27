@@ -13,7 +13,6 @@ function App() {
     const [center, setCenter] = useState({ lng: 113.802193, lat: 34.820333 })
 
     // filter relevant states
-<<<<<<< HEAD
     const [keyword, setKeyword] = useState('')
     const [selectedCategory, setSelectedCategory] = useState('')
     const [selectedTypes, setSelectedTypes] = useState([])
@@ -47,59 +46,12 @@ function App() {
                 // use last part of link as id
                 let arr = item.link.split('/')
                 item.id = arr[arr.length - 1]
-=======
-    const [ keyword, setKeyword ] = useState('')
-    const [ selectedCategory, setSelectedCategory ] = useState('')
-    const [ selectedTypes, setSelectedTypes ] = useState([])
 
-    // highlight relevant states
-    // changeList: (id -> icon) dict
-    const [ changeList, setChangeList ] = useState({})
+                // fill null category
+                item.category = item.category || '未分类'
 
-    function createDataItem(item) {
-        // including different ways to create the latLong and time fields to make it compatible
-        // across different versions of json format; only for the transition phase
-        item.isWeibo = !item.link.startsWith('no_link')
-        // generate random to prevent overlap
-        let random1 = Math.random()-0.5
-        let random2 = Math.random()-0.5
-        if (!item.isWeibo) {
-            random1 = random1 / 200
-            random2 = random2 / 200
-        } else {
-            random1 = random1 / 1000
-            random2 = random2 / 1000
-        }
-        item.location = {
-            lng: ((item.location && item.location.lng) || item.lng) + random1,
-            lat: ((item.location && item.location.lat) || item.lat) + random2
-        }
+                item.isWeibo = item.link.startsWith('no_link')
 
-        item.time = item.Time || item.time
-        if (item.isWeibo) {
-            // format time
-            item.timestamp = Date.parse(item.time)
-            const date = new Date(item.timestamp)
-            item.formatTime = `${date.getMonth() + 1}月${date.getDate()}日 ${item.time.substring(11, 20)}`
-        }
-
-        // use last part of link as id
-        let arr = item.link.split('/')
-        item.id = arr[arr.length - 1]
->>>>>>> Fork/master
-
-        // fill null category
-        item.category = item.category || '未分类'
-
-        // item category and types
-        const category = item.category
-        arr = category.split('_').map(e => e.trim())
-        // the first is category
-        item.category = arr.shift()
-        item.types = arr
-        item.color = COLOR_MAP[item.category]
-
-<<<<<<< HEAD
                 // item category and types
                 const category = item.category
                 arr = category.split('_').map(e => e.trim())
@@ -123,14 +75,7 @@ function App() {
         };
         xhr.open("GET", "https://api-henan.tianshili.me/parse_json.json");
         xhr.send()
-    },[]) // 带上中括号,避免重复请求
-
-=======
-        // default icon
-        item.icon = 'loc_red'
-
-        return item
-    }
+    }, []) // 带上中括号,避免重复请求
 
     // Fetch data on init
     useEffect(() => {
@@ -154,7 +99,6 @@ function App() {
         xhr_sheet.open("GET", "https://api-henan.tianshili.me/manual.json ");
         xhr_sheet.send()
     })
->>>>>>> Fork/master
 
     // [SECTION] Data generation
     let filterData = useMemo(() => {
@@ -166,34 +110,6 @@ function App() {
             return result
         }, {})
 
-<<<<<<< HEAD
-        if (timeRange !== 12 || (keyword && keyword.length > 0) || selectedCategory.length > 0 || selectedTypes.length > 0) {
-            const beginTime = Date.now() - timeRange * 60 * 60 * 1000
-
-            // convert selectedTypes into map, with (item -> true)
-            const selectedTypesMap = selectedTypes.reduce((result, item) => {
-                result[item] = true
-                return result
-            }, {})
-            currentFilteredData = data.filter(item => {
-                const result = (item.timestamp > beginTime) &&
-                    item.post.indexOf(keyword) > -1 &&
-                    item.category.indexOf(selectedCategory) > -1
-                // if already false
-                if (result === false) {
-                    return false
-                }
-
-                // default select all
-                if (selectedTypes.length === 0) return true
-
-
-                // if previous condition is true, check selected types
-                for (const type of item.types) {
-                    if (selectedTypesMap[type]) {
-                        return true
-                    }
-=======
         if (dataSource === 'weibo') {
             const beginTime = Date.now() - timeRange * 60 * 60 * 1000
             currentFilteredData = data[dataSource].filter(item => {
@@ -207,17 +123,10 @@ function App() {
                 // if previous condition is true, check selected types
                 for (const type of item.types) {
                     if (selectedTypesMap[type]) { return true }
->>>>>>> Fork/master
                 }
                 return false
             })
         } else {
-<<<<<<< HEAD
-            // only return data within 12 hours
-            const beginTime = Date.now() - 12 * 60 * 60 * 1000
-
-            currentFilteredData = data.filter(item => item.timestamp > beginTime)
-=======
             // filter for manual sheet source
             currentFilteredData = data[dataSource].filter(item => {
                 let contains_keyword = ((item.address.indexOf(keyword) > -1) ||
@@ -230,14 +139,8 @@ function App() {
                 }
                 return false
             })
->>>>>>> Fork/master
         }
         return currentFilteredData
-<<<<<<< HEAD
-    }, [data, timeRange, keyword, selectedCategory, selectedTypes])
-
-    // [SECTION] component call backs
-=======
     }, [data, dataSource, timeRange, keyword, selectedCategory, selectedTypes])
 
     // [SECTION] component call backs
@@ -245,7 +148,6 @@ function App() {
         setDataSource(value)
     }
 
->>>>>>> Fork/master
     function handleSliderChange(e) {
         setTimeRange(e)
     }
@@ -266,11 +168,7 @@ function App() {
         for (const id in list) {
             if (id === item.id) continue
 
-<<<<<<< HEAD
-            const prevItem = data.find(e => e.id === id)
-=======
             const prevItem = data[dataSource].find(e => e.id === id)
->>>>>>> Fork/master
             // if prevItem exists and it's highlighted, un-highlight it
             if (prevItem && list[id] !== prevItem.icon) {
                 list[id] = prevItem.icon
@@ -295,19 +193,6 @@ function App() {
                 selectedTypes={selectedTypes}
                 defaultText={listDefaultText}
                 notifySliderChange={handleSliderChange}
-<<<<<<< HEAD
-                notifyKeywordChange={e => setKeyword(e)}
-                notifyCategoryChange={e => { setSelectedCategory(e); setSelectedTypes([]) }}
-                notifyTypesChange={e => setSelectedTypes(e)}
-                handleItemClick={e => handleInfoSelected(e)}
-            />
-            <BaiduMap
-                data={data}
-                center={center}
-                changeList={changeList}
-                mapInited={handleMapInited}
-                handleBoundChanged={updateBounds} />
-=======
                 notifyDataSourceSwitch={handleDataSourceSwitch}
                 notifyKeywordChange={ e => setKeyword(e) }
                 notifyCategoryChange={ e => { setSelectedCategory(e); setSelectedTypes([]) } }
@@ -320,7 +205,6 @@ function App() {
                 changeList={changeList}
                 mapInited={handleMapInited}
                 handleBoundChanged={updateBounds}/>
->>>>>>> Fork/master
         </div>
     )
 }
