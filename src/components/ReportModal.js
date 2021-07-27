@@ -1,5 +1,5 @@
 import {useState} from "react"
-import { Modal, Select, Divider } from "antd"
+import { Modal, Select, Divider, message } from "antd"
 import InfoItem from "./InfoItem";
 import {CATEGORY_MAP} from "../common/constant";
 import "../styles/ReportModal.css"
@@ -11,16 +11,39 @@ const ReportModal = (props) => {
     const [category, setCategory] = useState('')
     const [types, setTypes] = useState([])
 
-    const showModal = () => {
-        props.setVisible(true)
+    // callback argument: (result: string)
+    const uploadData = (id, category, callback) => {
+        fetch('https://w6nyjxy4l9.execute-api.ap-east-1.amazonaws.com/api_deploy/item', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                itemID: id,
+                category: category
+            })
+        }).then(e => callback('ok'))
+            .catch(err => callback(err.toString()))
     }
 
     const handleOk = () => {
         setConfirmLoading(true)
-        setTimeout(() => {
-            props.setVisible(false)
+
+        const newCategory = [category, ...selectedTypes].join('_')
+        uploadData(props.item.link, newCategory, msg => {
+            console.log(msg)
+
+            if (msg === 'ok') {
+                message.success('提交成功，请等待信息刷新')
+                props.setVisible(false)
+            } else {
+                message.error('上传出错，请稍后再试');
+                setConfirmLoading(false)
+            }
+
             setConfirmLoading(false)
-        }, 2000)
+        })
     }
 
     const handleCancel = () => {
@@ -56,7 +79,7 @@ const ReportModal = (props) => {
             <Divider/>
 
             <label className="new-tag">正确标签: </label>
-            <Select defaultValue={props.item.category} className="info-list-category" style={{}}
+            <Select defaultValue={''} className="info-list-category" style={{}}
                     onChange={handleCategoryChange}>
                 {categories.map(category => <Option value={category} key={category}>{category}</Option>)}
             </Select>

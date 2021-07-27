@@ -57,7 +57,8 @@ function App() {
         item.id = arr[arr.length - 1]
 
         // fill null category
-        item.category = item.category || '未分类'
+        // revised_category has a higher priority
+        item.category = item.revised_category || item.category || '未分类'
 
         // item category and types
         const category = item.category
