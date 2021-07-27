@@ -1,4 +1,4 @@
-![项目截图](https://user-images.githubusercontent.com/8768646/126867438-14cd8d22-9ad1-4a6e-ae13-060b8467a90d.png)
+![项目截图](https://user-images.githubusercontent.com/8768646/127113652-59e5ccd3-c877-4740-a310-dd9efc204ba2.png)
 
 
 河南暴雨求助微博的地图可视化项目：https://henan.tianshili.me/
