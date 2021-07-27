@@ -185,6 +185,22 @@ function App() {
         setModalState({ visible: true, item: item })
     }
 
+    function handleModalVisible(isVisible, item, newCategory) {
+        // if successfully updated
+        if (isVisible === false && item) {
+            let items = [...data.weibo]
+            let index = items.findIndex(e => e.id === item.id)
+            if (index > -1) {
+                let newItem = {...items[index]}
+                newItem.category = newCategory
+                items[index] = createDataItem(newItem)
+                setData(previousData => ({...previousData, weibo: items}))
+            }
+        }
+
+        setModalState({ visible: isVisible, item: item })
+    }
+
     return (
         <div className={"rootDiv"}>
             <InfoHeader
@@ -211,7 +227,7 @@ function App() {
             { modalState.visible && modalState.item ?
                 <ReportModal item={modalState.item}
                          visible={modalState.visible}
-                         setVisible={(v, e) => { setModalState({ visible: v, item: e }) }}/> :null }
+                         setVisible={handleModalVisible}/> :null }
         </div>
     )
 }

@@ -36,10 +36,9 @@ const ReportModal = (props) => {
 
             if (msg === 'ok') {
                 message.success('提交成功，请等待信息刷新')
-                props.setVisible(false)
+                props.setVisible(false, props.item, newCategory)
             } else {
                 message.error('上传出错，请稍后再试');
-                setConfirmLoading(false)
             }
 
             setConfirmLoading(false)
