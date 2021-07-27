@@ -1,4 +1,4 @@
-import {useState} from "react"
+import {useEffect, useState} from "react"
 import { Modal, Select, Divider, message } from "antd"
 import InfoItem from "./InfoItem";
 import {CATEGORY_MAP} from "../common/constant";
@@ -89,6 +89,7 @@ const ReportModal = (props) => {
                     defaultValue={[]}
                     allowClear
                     style={{}}
+                    showSearch={false}
                     disabled={types.length === 0}
                     onChange={handleTypesChange}>
                 {types.map(type => (
