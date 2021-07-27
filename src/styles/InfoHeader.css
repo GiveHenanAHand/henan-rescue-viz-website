@@ -25,7 +25,7 @@
   border-color: #00000008;
 }
 
-.info-item {
+.info-list .info-item {
   display: block;
   text-decoration: none;
   cursor: pointer;
@@ -52,7 +52,7 @@
 
 .info-item-link {
   margin-left: 10px;
-  margin-right: 10px;
+  /*margin-right: 5px;*/
   font-size: 13px;
 }
 
@@ -78,6 +78,7 @@
 }
 
 .info-item-tag-list {
+  margin-left: 10px;
 }
 
 .info-list-header {

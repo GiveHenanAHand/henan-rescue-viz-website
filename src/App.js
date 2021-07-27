@@ -2,6 +2,7 @@ import React, {useEffect, useState, useMemo} from "react";
 import { BaiduMap, InfoHeader } from "./components";
 import { COLOR_MAP } from './common/constant'
 import './styles/App.css';
+import ReportModal from "./components/ReportModal";
 
 function App() {
     const [timeRange, setTimeRange] = useState(6)
@@ -20,6 +21,9 @@ function App() {
     // highlight relevant states
     // changeList: (id -> icon) dict
     const [ changeList, setChangeList ] = useState({})
+
+    // modal relevant states
+    const [ modalState, setModalState ] = useState({ modalVisible: false, item: null })
 
     function createDataItem(item) {
         // including different ways to create the latLong and time fields to make it compatible
@@ -166,6 +170,10 @@ function App() {
         setCenter(item.location)
     }
 
+    function handleCorrection(item) {
+        setModalState({ visible: true, item: item })
+    }
+
     return (
         <div className={"rootDiv"}>
             <InfoHeader
@@ -180,13 +188,19 @@ function App() {
                 notifyCategoryChange={ e => { setSelectedCategory(e); setSelectedTypes([]) } }
                 notifyTypesChange={ e => setSelectedTypes(e) }
                 handleItemClick={ e => handleInfoSelected(e) }
+                handleCorrection={ e => handleCorrection(e) }
             />
             <BaiduMap
                 data={filterData}
                 center={center}
                 changeList={changeList}
                 mapInited={handleMapInited}
+                handleCorrection={handleCorrection}
                 handleBoundChanged={updateBounds}/>
+            { modalState.visible && modalState.item ?
+                <ReportModal item={modalState.item}
+                         visible={modalState.visible}
+                         setVisible={(v, e) => { setModalState({ visible: v, item: e }) }}/> :null }
         </div>
     )
 }
