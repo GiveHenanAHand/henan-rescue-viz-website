@@ -16,7 +16,7 @@ function InfoWindow(props) {
             <Button type="text" danger className="windowCloseBtn" onClick={props.onCloseClick}>
                 <CloseCircleOutlined />
             </Button>
-            <InfoItem info={props.item} key={props.item.id}/>
+            <InfoItem info={props.item} key={props.item.id} handleCorrection={props.handleCorrection}/>
             </Card>
         </CustomOverlay>
 }

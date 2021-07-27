@@ -73,7 +73,8 @@ function BaiduMap(props) {
                 { infoMarkers }
                 <InfoWindow 
                     item={props.data.find(e => e.id === focus)}
-                    shouldAutoCenter={shouldAutoFocus} 
+                    shouldAutoCenter={shouldAutoFocus}
+                    handleCorrection={props.handleCorrection}
                     onCloseClick={onWindowCloseClick}/>
             </Map>
 }

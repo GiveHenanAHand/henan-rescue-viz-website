@@ -124,6 +124,7 @@ function InfoHeader(props) {
                         className="info-list-types"
                         value={props.selectedTypes}
                         defaultValue={[]}
+                        showSearch={false}
                         allowClear
                         style={{ }}
                         disabled={types.length === 0}
@@ -141,7 +142,7 @@ function InfoHeader(props) {
                 locale={ { emptyText: props.defaultText } }
                 renderItem={item => (
                     <List.Item key={item.id} className={item.id === selectedId ? "selected-item" : ''} onClick={ () => { handleItemClicked(item) } }>
-                        <InfoItem info={item} />
+                        <InfoItem info={item} handleCorrection={props.handleCorrection}/>
                     </List.Item>
                 )}
                 />
