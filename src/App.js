@@ -82,13 +82,7 @@ function App() {
         // default icon
         item.icon = 'loc_red'
 
-        return {
-            geometry: {
-                type: 'Point',
-                coordinates: [item.location.lng, item.location.lat],
-            },
-            properties: item,
-        }
+        return item
     }
 
     // Fetch data on init
@@ -112,7 +106,7 @@ function App() {
         };
         xhr_sheet.open("GET", "https://api-henan.tianshili.me/manual.json");
         xhr_sheet.send()
-    })
+    },[])
 
     // [SECTION] Data generation
     let filterData = useMemo(() => {

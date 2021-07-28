@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo } from "react";
 import { Map, ScaleControl, ZoomControl, MapTypeControl, MapvglView, MapvglLayer } from 'react-bmapgl';
 import { InfoWindow, LocationControl } from ".";
+import { COLOR_MAP } from '../common/constant'
 
 function BaiduMap(props) {
     const [focus, setFocus] = useState("")
@@ -37,21 +38,37 @@ function BaiduMap(props) {
         props.handleBoundChanged(visibleBounds)
     }
 
-    function onWindowCloseClick() {
-        // onPointClick(focus)
+    function onWindowCloseClick(e) {
+        e.stopPropagation()
+        const item = {
+            dataItem: {
+                properties: focus
+            }
+        };
+        onPointClick(item)
     }
 
     const onPointClick = useCallback((e) => {
-        console.log('e', e);
-        const { geometry, properties } = e.dataItem;
-        setShouldAutoFocus(true)
-        if (focus === properties.id) {
-            setFocus("")
-        } else {
-            setFocus(properties.id)
+        if (e.dataItem){
+            const { geometry, properties } = e.dataItem;
+            setShouldAutoFocus(true)
+            if (focus === properties.id) {
+                setFocus("")
+            } else {
+                setFocus(properties.id)
+            }
         }
-    }, []);
+    }, [focus]);
 
+    const geojson = props.data.map(item=>(
+        {
+            geometry: {
+                type: 'Point',
+                coordinates: [item.location.lng, item.location.lat],
+            },
+            properties: item,
+        }
+    ))
     return <Map
         enableScrollWheelZoom={true}
         enableDragging={true}
@@ -60,30 +77,35 @@ function BaiduMap(props) {
         className="mapDiv"
         ref={mapRef}
         style={{ height: "100%" }}>
+        <ZoomControl />
+        <ScaleControl />
+        <LocationControl />
+        <MapTypeControl mapTypes={['normal', 'satellite']} />
+        <InfoWindow
+            item={props.data.find(e => e.id === focus)}
+            shouldAutoCenter={shouldAutoFocus}
+            onCloseClick={onWindowCloseClick} />
         <MapvglView>
             <MapvglLayer
                 type="PointLayer"
-                data={props.data}
+                data={geojson}
                 options={{
-                    blend: 'lighter',
+                    // width: 32,
+                    // height: 32,
+                    // icon: '../images/marker.png',
+                    color: (item)=>{
+                        const { properties: { category} } = item
+                        return COLOR_MAP[category]
+                    },
                     size: 20,
-                    color: 'rgb(255, 53, 0, 0.6)',
                     enablePicked: true,// 是否可以拾取
-                    // selectedIndex: -1, // 选中数据项索引
+                    selectedIndex: -1, // 选中数据项索引
                     selectedColor: '#ff0000', // 选中项颜色
                     autoSelect: true,// 根据鼠标位置来自动设置选中项
                     onClick: onPointClick,
                 }}
             />
         </MapvglView>
-        <ZoomControl />
-        <ScaleControl />
-        <LocationControl />
-        <MapTypeControl mapTypes={['normal', 'satellite']} />
-        <InfoWindow
-            item={props.data.find(e => e.properties.id === focus)}
-            shouldAutoCenter={shouldAutoFocus}
-            onCloseClick={onWindowCloseClick} />
     </Map>
 }
 
