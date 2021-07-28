@@ -87,12 +87,10 @@ function BaiduMap(props) {
             onCloseClick={onWindowCloseClick} />
         <MapvglView>
             <MapvglLayer
-                type="PointLayer"
+                type="IconLayer"
                 data={geojson}
                 options={{
-                    // width: 32,
-                    // height: 32,
-                    // icon: '../images/marker.png',
+                    icon: './images/marker.png',
                     color: (item)=>{
                         const { properties: { category} } = item
                         return COLOR_MAP[category]
