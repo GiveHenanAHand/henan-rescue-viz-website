@@ -100,7 +100,7 @@ function BaiduMap(props) {
                     },
                     size: 20,
                     enablePicked: true,// 是否可以拾取
-                    selectedIndex: -1, // 选中数据项索引
+                    selectedIndex: 99, // 选中数据项索引
                     selectedColor: '#ff0000', // 选中项颜色
                     autoSelect: true,// 根据鼠标位置来自动设置选中项
                     onClick: onPointClick,
