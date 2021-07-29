@@ -93,7 +93,7 @@ function BaiduMap(props) {
                 type="IconLayer"
                 data={geojson}
                 options={{
-                    icon: './images/marker.png',
+                    icon: './images/marker.svg',
                     color: (item)=>{
                         const { properties: { category} } = item
                         return COLOR_MAP[category]
