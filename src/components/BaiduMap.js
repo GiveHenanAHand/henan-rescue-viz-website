@@ -2,6 +2,7 @@ import React, { useState, useCallback, useMemo } from "react";
 import { Map, ScaleControl, ZoomControl, MapTypeControl, MapvglView, MapvglLayer } from 'react-bmapgl';
 import { InfoWindow, LocationControl } from ".";
 import { COLOR_MAP } from '../common/constant'
+import { MARKER } from '../icon';
 
 function BaiduMap(props) {
     const [focus, setFocus] = useState("")
@@ -60,15 +61,17 @@ function BaiduMap(props) {
         }
     }, [focus]);
 
-    const geojson = props.data.map(item=>(
-        {
+    const geojson = props.data.map(item=>{
+        delete item.icon
+        delete item.color
+        return {
             geometry: {
                 type: 'Point',
                 coordinates: [item.location.lng, item.location.lat],
             },
             properties: item,
         }
-    ))
+    })
     return <Map
         enableScrollWheelZoom={true}
         enableDragging={true}
