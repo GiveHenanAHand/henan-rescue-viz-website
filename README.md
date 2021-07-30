@@ -9,7 +9,8 @@
 [团队介绍与更新日志](https://u9u37118bj.feishu.cn/docs/doccn3QzzbeQLPQwNSb4Hcl2X1g#)
 
 ## 相关项目
-[后台与数据处理](https://github.com/GiveHenanAHand/henan-rescue-viz-data)
+- [后台与数据处理](https://github.com/GiveHenanAHand/henan-rescue-viz-data)
+- [信息自动分类](https://github.com/RLSNLP/henan-rescue)
 
 
 ## 项目数据已同步到飞书文档
