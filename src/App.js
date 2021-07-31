@@ -82,6 +82,9 @@ function App() {
         // default icon
         item.icon = 'loc_red'
 
+        // fill null address
+        item.address = item.address || ''
+
         return item
     }
 
