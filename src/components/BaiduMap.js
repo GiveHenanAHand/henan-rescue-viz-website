@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect} from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Map, ScaleControl, ZoomControl, MapTypeControl, MapvglView, MapvglLayer } from 'react-bmapgl';
 import { InfoWindow, LocationControl } from ".";
 import { COLOR_MAP } from '../common/constant'
@@ -65,9 +65,11 @@ function BaiduMap(props) {
         }
     }, [focus]);
 
-    const geojson = props.data.map((item) => {
+    const geojson = [];
+    let centerPoint = null;
+    props.data.map((item) => {
         delete item.color
-        return {
+        const point = {
             geometry: {
                 type: 'Point',
                 coordinates: [item.location.lng, item.location.lat],
@@ -77,7 +79,13 @@ function BaiduMap(props) {
                 icon: item.id === (focus || listIem) ? './images/marker-blue.svg' : './images/marker-red.svg',
             },
         }
+        if (item.id === (focus || listIem)) {
+            centerPoint = point;
+        } else {
+            geojson.push(point);
+        }
     })
+    centerPoint && geojson.push(centerPoint);
     let loc = { lng: 113.802193, lat: 34.820333 };
 
     if (props.center) {
@@ -127,7 +135,9 @@ function BaiduMap(props) {
                     },
                     size: 20,
                     enablePicked: true,// 是否可以拾取
-                    // selectedIndex: -1, // 选中数据项索引
+                    selectedIndex: (item) => {
+                        console.log('item', item);
+                    },
                     selectedColor: '#5B8FF9', // 选中项颜色
                     autoSelect: true,// 根据鼠标位置来自动设置选中项
                     onClick: onPointClick,
