@@ -11,7 +11,7 @@ function App() {
     const [bounds, setBounds] = useState(null)
     const [listDefaultText, setListDefaultText] = useState("")
     // map center
-    const [center, setCenter] = useState({ lng: 113.802193, lat: 34.820333 })
+    const [center, setCenter] = useState(null)
 
     // filter relevant states
     const [keyword, setKeyword] = useState('')
@@ -106,7 +106,7 @@ function App() {
         };
         xhr_sheet.open("GET", "https://api-henan.tianshili.me/manual.json");
         xhr_sheet.send()
-    },[])
+    })
 
     // [SECTION] Data generation
     let filterData = useMemo(() => {
@@ -189,7 +189,7 @@ function App() {
         // highlight item
         list[item.id] = 'loc_blue'
         setChangeList(list)
-        setCenter(item.location)
+        setCenter(item)
     }
 
     function handleCorrection(item) {

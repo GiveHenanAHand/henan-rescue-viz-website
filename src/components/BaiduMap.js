@@ -1,13 +1,13 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useEffect} from "react";
 import { Map, ScaleControl, ZoomControl, MapTypeControl, MapvglView, MapvglLayer } from 'react-bmapgl';
 import { InfoWindow, LocationControl } from ".";
 import { COLOR_MAP } from '../common/constant'
-import { MARKER } from '../icon';
 
 function BaiduMap(props) {
     const [focus, setFocus] = useState("")
     const [bounds, setBounds] = useState(null)
     const [shouldAutoFocus, setShouldAutoFocus] = useState(true)
+    const [listIem, setListItem] = useState(null);
 
     const mapRef = useCallback(node => {
         if (node !== null && bounds == null) {
@@ -50,33 +50,52 @@ function BaiduMap(props) {
     }
 
     const onPointClick = useCallback((e) => {
-        if (e.dataItem){
-            const { geometry, properties } = e.dataItem;
+        const { dataIndex, dataItem } = e;
+        if (dataItem) {
+            const { geometry, properties } = dataItem;
             setShouldAutoFocus(true)
             if (focus === properties.id) {
                 setFocus("")
             } else {
                 setFocus(properties.id)
             }
+        } else {
+            // 点击空白关闭infoWindow
+            setFocus("")
         }
     }, [focus]);
 
-    const geojson = props.data.map(item=>{
-        delete item.icon
+    const geojson = props.data.map((item) => {
         delete item.color
         return {
             geometry: {
                 type: 'Point',
                 coordinates: [item.location.lng, item.location.lat],
             },
-            properties: item,
+            properties: {
+                ...item,
+                icon: item.id === (focus || listIem) ? './images/marker-blue.svg' : './images/marker-red.svg',
+            },
         }
     })
+    let loc = { lng: 113.802193, lat: 34.820333 };
+
+    if (props.center) {
+        const { location } = props.center;
+        loc = location;
+    }
+
+    // 选中列表项展示infoWindow
+    useEffect(() => {
+        if (props.center) {
+            setListItem(props.center.id);
+        }
+    }, [props.center]);
     return <Map
         enableScrollWheelZoom={true}
         enableDragging={true}
         zoom={9}
-        center={props.center}
+        center={loc}
         className="mapDiv"
         ref={mapRef}
         style={{ height: "100%" }}>
@@ -93,15 +112,23 @@ function BaiduMap(props) {
                 type="IconLayer"
                 data={geojson}
                 options={{
-                    icon: './images/marker.svg',
-                    color: (item)=>{
-                        const { properties: { category} } = item
+                    // icon: (item) => {
+                    //     console.log('item', item.properties);
+                    //     if (item.properties.id === focus) {
+                    //         return './images/marker-blue.svg';
+                    //     }
+                    //     console.log('item', item);
+                    //     return './images/marker-red.svg';
+                    // },
+                    color: (item) => {
+                        // console.log('item', item);
+                        const { properties: { category } } = item
                         return COLOR_MAP[category]
                     },
                     size: 20,
                     enablePicked: true,// 是否可以拾取
-                    selectedIndex: 99, // 选中数据项索引
-                    selectedColor: '#ff0000', // 选中项颜色
+                    // selectedIndex: -1, // 选中数据项索引
+                    selectedColor: '#5B8FF9', // 选中项颜色
                     autoSelect: true,// 根据鼠标位置来自动设置选中项
                     onClick: onPointClick,
                 }}
