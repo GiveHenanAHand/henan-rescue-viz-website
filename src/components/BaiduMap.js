@@ -68,7 +68,7 @@ function BaiduMap(props) {
     const geojson = [];
     let centerPoint = null;
     props.data.map((item) => {
-        delete item.color
+        // delete item.color
         const point = {
             geometry: {
                 type: 'Point',
@@ -114,6 +114,7 @@ function BaiduMap(props) {
         <InfoWindow
             item={props.data.find(e => e.id === focus)}
             shouldAutoCenter={shouldAutoFocus}
+            handleCorrection={props.handleCorrection}
             onCloseClick={onWindowCloseClick} />
         <MapvglView>
             <MapvglLayer

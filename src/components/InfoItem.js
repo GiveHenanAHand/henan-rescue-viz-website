@@ -1,7 +1,8 @@
 import { Tag, Button } from "antd"
 
 function InfoItem(props) {
-    const handleCorrection = () => {
+    const handleCorrection = (e) => {
+        e.stopPropagation()
         if (props.handleCorrection) {
             props.handleCorrection(props.info)
         }

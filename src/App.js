@@ -193,6 +193,7 @@ function App() {
     }
 
     function handleCorrection(item) {
+        console.log('sssss');
         setModalState({ visible: true, item: item })
     }
 
