@@ -2,6 +2,7 @@ const COLOR_MAP = {
     '求救': '#EC2215',
     '帮助': '#47AE53',
     '其他': '#3371BE',
+    '未分类': '#ac3370aa',
 }
 
 const CATEGORY_MAP = {

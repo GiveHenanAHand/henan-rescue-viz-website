@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useMemo} from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { BaiduMap, InfoHeader } from "./components";
 import { COLOR_MAP } from './common/constant'
 import './styles/App.css';
@@ -11,16 +11,16 @@ function App() {
     const [bounds, setBounds] = useState(null)
     const [listDefaultText, setListDefaultText] = useState("")
     // map center
-    const [center, setCenter] = useState({ lng: 113.802193, lat: 34.820333 })
+    const [center, setCenter] = useState(null)
 
     // filter relevant states
-    const [ keyword, setKeyword ] = useState('')
-    const [ selectedCategory, setSelectedCategory ] = useState('')
-    const [ selectedTypes, setSelectedTypes ] = useState([])
+    const [keyword, setKeyword] = useState('')
+    const [selectedCategory, setSelectedCategory] = useState('')
+    const [selectedTypes, setSelectedTypes] = useState([])
 
     // highlight relevant states
     // changeList: (id -> icon) dict
-    const [ changeList, setChangeList ] = useState({})
+    const [changeList, setChangeList] = useState({})
 
     // modal relevant states
     const [ modalState, setModalState ] = useState({ modalVisible: false, item: null })
@@ -30,8 +30,8 @@ function App() {
         // across different versions of json format; only for the transition phase
         item.isWeibo = !item.link.startsWith('no_link')
         // generate random to prevent overlap
-        let random1 = Math.random()-0.5
-        let random2 = Math.random()-0.5
+        let random1 = Math.random() - 0.5
+        let random2 = Math.random() - 0.5
         if (!item.isWeibo) {
             random1 = random1 / 200
             random2 = random2 / 200
@@ -95,7 +95,7 @@ function App() {
             if ('weibo' in data) return
             const serverData = JSON.parse(xhr_weibo.responseText)
             const items = serverData.map(createDataItem)
-            setData(previousData => ({...previousData, weibo: items}))
+            setData(previousData => ({ ...previousData, weibo: items }))
         };
         xhr_weibo.open("GET", "https://api-henan.tianshili.me/parse_json.json");
         xhr_weibo.send()
@@ -105,7 +105,7 @@ function App() {
             if ('sheet' in data) return
             const serverData = JSON.parse(xhr_sheet.responseText)
             const items = serverData.map(createDataItem)
-            setData(previousData => ({...previousData, sheet: items}))
+            setData(previousData => ({ ...previousData, sheet: items }))
         };
         xhr_sheet.open("GET", "https://api-henan.tianshili.me/manual.json");
         xhr_sheet.send()
@@ -125,8 +125,8 @@ function App() {
             const beginTime = Date.now() - timeRange * 60 * 60 * 1000
             currentFilteredData = data[dataSource].filter(item => {
                 const result = (item.timestamp > beginTime) &&
-                            item.post.indexOf(keyword) > -1 &&
-                            item.category.indexOf(selectedCategory) > -1
+                    item.post.indexOf(keyword) > -1 &&
+                    item.category.indexOf(selectedCategory) > -1
                 // if already false
                 if (result === false) { return false }
                 // default select all
@@ -192,10 +192,11 @@ function App() {
         // highlight item
         list[item.id] = 'loc_blue'
         setChangeList(list)
-        setCenter(item.location)
+        setCenter(item)
     }
 
     function handleCorrection(item) {
+        console.log('sssss');
         setModalState({ visible: true, item: item })
     }
 
